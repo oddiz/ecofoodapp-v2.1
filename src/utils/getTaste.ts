@@ -1,7 +1,9 @@
-import { ITastePref } from "@/types/food";
+import { type ITastePref } from "@/types/food";
 
 export function getTaste() {
-    const taste = JSON.parse(localStorage.getItem("taste") || "{}") as unknown as ITastePref;
+  const taste = JSON.parse(
+    localStorage.getItem("taste") ?? "{}",
+  ) as unknown as ITastePref;
 
-    return new Map(Object.entries(taste));
+  return new Map(Object.entries(taste));
 }

@@ -1,5 +1,5 @@
-import { useSearch } from "hooks/useSearch";
-import React, { useEffect, useRef, useState } from "react";
+import { useSearch } from "@/hooks/useSearch";
+import React, { useEffect, useRef } from "react";
 import { IoClose } from "react-icons/io5";
 
 export const Search = ({ className }: { className: string }) => {

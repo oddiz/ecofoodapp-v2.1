@@ -2,8 +2,7 @@ import { TbMeat } from "react-icons/tb";
 import { NavItem } from "./NavItem";
 import { IoStorefrontSharp, IoHeart } from "react-icons/io5";
 import Image from "next/image";
-import { useState } from "react";
-import { useNavigator } from "hooks/useNavigator";
+import { useNavigator } from "@/hooks/useNavigator";
 import Link from "next/link";
 
 export const Navigator: React.FC = () => {
@@ -40,10 +39,8 @@ export const Navigator: React.FC = () => {
                 <Image
                     src="/logo.png"
                     alt="Eco Food App"
-                    layout="intrinsic"
                     width={256}
                     height={256}
-                    objectFit="contain"
                 />
             </div>
             <div
@@ -55,7 +52,6 @@ export const Navigator: React.FC = () => {
                         href={item.link}
                         key={item.id}
                     >
-                        <a>
                             <NavItem
                                 id={item.id}
                                 icon={item.icon}
@@ -63,7 +59,6 @@ export const Navigator: React.FC = () => {
                                 active={item.id === activePage}
                                 onClickHandler={handleNavItemClick}
                             />
-                        </a>
                     </Link>
                 ))}
             </div>

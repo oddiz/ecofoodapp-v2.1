@@ -6,9 +6,9 @@ import { Navigator } from "@/components/Nav/Navigator";
 import { Header } from "@/components/Header/Header";
 import { NavProvider } from "@/hooks/useNavigator";
 
-export function EcoFoodApp({
+function EcoFoodApp({
   Component,
-  pageProps: { ...pageProps },
+  pageProps,
 }: AppProps) {
   return (
     <NavProvider>
@@ -27,3 +27,5 @@ export function EcoFoodApp({
     </NavProvider>
   );
 }
+
+export default EcoFoodApp;

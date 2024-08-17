@@ -1,58 +1,106 @@
-import { Popover, RadioGroup } from "@headlessui/react";
-import { useEffect, useState } from "react";
+import React from 'react';
+import { Popover, PopoverButton, PopoverPanel, RadioGroup } from "@headlessui/react";
 import { FaSortNumericDown } from "react-icons/fa";
-import { SortOptionId } from "../IndexContent";
+import { useStore } from '@/store/useStore'; // Adjust the import path as needed
+import type { ISortOption, Food, SortableProperty } from "@/types/food";
 
-export type ISortOption = {
-    id: SortOptionId;
-    label: string;
-    desc?: boolean;
-};
 const sortOptions: ISortOption[] = [
-    { id: "total_nutrients", label: "Total Nutrients" },
-    { id: "name", label: "Name" },
-    { id: "calories", label: "Calories" },
-    { id: "weight", label: "Weight" },
-    { id: "carb", label: "Carbs" },
-    { id: "fat", label: "Fat" },
-    { id: "pro", label: "Protein" },
-    { id: "vit", label: "Vitamins" },
+    { id: "total_nutrients", label: "Total Nutrients", desc: true },
+    { id: "name", label: "Name", desc: true },
+    { id: "calories", label: "Calories", desc: true },
+    { id: "weight", label: "Weight", desc: true },
+    { id: "carb", label: "Carbs", desc: true },
+    { id: "fat", label: "Fat", desc: true },
+    { id: "pro", label: "Protein", desc: true },
+    { id: "vit", label: "Vitamins", desc: true },
 ];
-export function SortButton({ filters, setActiveFilters }: any) {
-    const [selectedSort, setSelectedSort] = useState<ISortOption>(sortOptions[0]);
-    function handleSortSelect(sortOption: ISortOption) {
-        setSelectedSort(sortOption);
-        setActiveFilters((prev: any) => {
-            return {
-                ...prev,
-                sort: sortOption,
-            };
-        });
+
+
+const isSortableProperty = (property: string): property is SortableProperty => {
+    return ['calories', 'weight', 'carb', 'fat', 'pro', 'vit'].includes(property);
+};
+
+const getSortValue = (food: Food, property: SortableProperty): number => {
+    if (isSortableProperty(property)) {
+        return food[property];
     }
-    useEffect(() => {
-        setSelectedSort(filters?.sort || sortOptions[0]);
-    }, [filters]);
+    return 0;
+};
+
+const sortFunctions: Record<string, (a: Food, b: Food) => number> = {
+    total_nutrients: (a, b) => (b.cal + b.carb + b.fat + b.pro + b.vit) - (a.cal + a.carb + a.fat + a.pro + a.vit),
+    name: (a, b) => a.name.localeCompare(b.name),
+    calories: (a, b) => getSortValue(b, 'cal') - getSortValue(a, 'cal'),
+    weight: (a, b) => getSortValue(b, 'weight') - getSortValue(a, 'weight'),
+    carb: (a, b) => getSortValue(b, 'carb') - getSortValue(a, 'carb'),
+    fat: (a, b) => getSortValue(b, 'fat') - getSortValue(a, 'fat'),
+    pro: (a, b) => getSortValue(b, 'pro') - getSortValue(a, 'pro'),
+    vit: (a, b) => getSortValue(b, 'vit') - getSortValue(a, 'vit'),
+};
+
+export function SortButton() {
+    const { activeFilters, setActiveFilters, selectedFoods, setSelectedFoods } = useStore();
+
+    function handleSortSelect(sortOption: ISortOption) {
+        setActiveFilters({
+            ...activeFilters,
+            sort: sortOption
+        });
+        sortFoods(sortOption.id, sortOption.desc);
+    }
+
+    function toggleSortDirection() {
+        const newSort = { ...activeFilters.sort, desc: !activeFilters.sort.desc };
+        setActiveFilters({
+            ...activeFilters,
+            sort: newSort
+        });
+        sortFoods(newSort.id, newSort.desc);
+    }
+
+    function sortFoods(sortId: string, desc: boolean) {
+        const sortFunction = sortFunctions[sortId];
+        if (!sortFunction) {
+            console.error(`No sort function found for id: ${sortId}`);
+            return;
+        }
+        
+        const sortedFoods = [...selectedFoods].sort((a, b) => {
+            const compareResult = sortFunction(a, b);
+            return desc ? compareResult : -compareResult;
+        });
+        setSelectedFoods(sortedFoods);
+    }
+
     return (
         <Popover className="relative">
-            <Popover.Button>
+            <PopoverButton className="flex items-center">
                 <FaSortNumericDown />
-            </Popover.Button>
+                <span className="ml-2">{activeFilters.sort.label}</span>
+                <span className="ml-1">{activeFilters.sort.desc ? '▼' : '▲'}</span>
+            </PopoverButton>
 
-            <Popover.Panel className="absolute z-10 text-primary-600">
+            <PopoverPanel className="absolute z-10 text-primary-600">
                 <div className="flex w-40 flex-col rounded-xl text-lg dark:bg-primarydark-100">
-                    <header className="flex h-12 items-center border-b-2 pl-4 dark:border-b-primarydark-300">
-                        Sort By:
+                    <header className="flex h-12 items-center justify-between border-b-2 px-4 dark:border-b-primarydark-300">
+                        <span>Sort By:</span>
+                        <button onClick={toggleSortDirection}>
+                            {activeFilters.sort.desc ? '▼' : '▲'}
+                        </button>
                     </header>
                     <RadioGroup
-                        value={selectedSort.label}
-                        onChange={(value: SortOptionId) => {
-                            handleSortSelect(sortOptions.filter((option) => option.label === value)[0]);
+                        value={activeFilters.sort.id}
+                        onChange={(value: string) => {
+                            const selectedOption = sortOptions.find((option) => option.id === value);
+                            if (selectedOption) {
+                                handleSortSelect(selectedOption);
+                            }
                         }}
                     >
                         {sortOptions.map((option) => (
                             <RadioGroup.Option
                                 key={option.id}
-                                value={option.label}
+                                value={option.id}
                                 className="my-2 flex w-full justify-center text-base"
                             >
                                 {({ checked }) => (
@@ -68,19 +116,7 @@ export function SortButton({ filters, setActiveFilters }: any) {
                         ))}
                     </RadioGroup>
                 </div>
-            </Popover.Panel>
+            </PopoverPanel>
         </Popover>
     );
 }
-
-/*
-<a>Name</a>
-<a>Tier</a>
-<a>Type</a>
-<a>Calories</a>
-<a>Weight</a>
-<a>Protein</a>
-<a>Vitamin</a>
-<a>Carbohydrate</a>
-<a>Fat</a>
-*/

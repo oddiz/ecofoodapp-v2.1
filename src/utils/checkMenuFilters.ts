@@ -3,7 +3,7 @@ type ICalculatorFilter = {
     maxCalories: number;
 };
 
-import { Food } from "@/types/food";
+import { type Food } from "@/types/food";
 
 export function menuValid(menu: Food[], filters: ICalculatorFilter | null) {
     if (!filters) return true;

@@ -6,7 +6,7 @@ export type ContextData = {
 };
 export const SearchContext = createContext<ContextData>({
     searchInput: "",
-    setSearchInput: (value: string) => {},
+    setSearchInput: (value: string) => {return value},
 });
 
 export const useSearch = () => {

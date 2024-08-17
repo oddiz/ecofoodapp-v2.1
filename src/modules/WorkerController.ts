@@ -4,6 +4,7 @@ import {
   type CalculateParameters,
   type StartWorkerMessage,
 } from "@/types/food";
+
 class CustomEventEmitter {
   private listeners: Record<string, Array<(...args: unknown[]) => void>> = {};
 
@@ -75,15 +76,10 @@ export class WorkerController extends CustomEventEmitter {
   start(calcParams: CalculateParameters) {
     this.state = "calculating";
     this.calculateParameters = calcParams;
-    const { foods, filters, taste, menuSize, calculateType } = calcParams;
 
     this.postMessage({
       message: "start_worker",
-      foods,
-      filters,
-      taste,
-      menuSize,
-      calculateType,
+      ...calcParams
     } as StartWorkerMessage);
   }
 }

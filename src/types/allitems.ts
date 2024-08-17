@@ -1,5 +1,5 @@
 export interface Pokedex {
-  AllItems: { [key: string]: AllItem };
+  AllItems: Record<string, AllItem>;
 }
 
 export interface AllItem {
@@ -192,7 +192,7 @@ export interface Blueprint {
 }
 
 export interface Broken {
-  Boolean: Boolean;
+  Boolean: boolean;
 }
 
 export enum Boolean {

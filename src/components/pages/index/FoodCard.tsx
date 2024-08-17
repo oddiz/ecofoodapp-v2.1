@@ -1,6 +1,6 @@
-import { PieChartFromFood } from "@/components/PieChart";
+import  PieChartFromFood from "@/components/PieChart";
 import { Tooltip } from "@/components/Tooltip";
-import { Food } from "@/types/food";
+import { type Food } from "@/types/food";
 import Image from "next/image";
 import { useState } from "react";
 import { FaWeightHanging, FaFire, FaNutritionix } from "react-icons/fa";

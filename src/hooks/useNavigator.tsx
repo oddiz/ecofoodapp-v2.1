@@ -6,7 +6,8 @@ export type ContextData = {
 };
 export const NavContext = createContext<ContextData>({
     activePage: "",
-    setActivePage: (value: string) => {},
+    setActivePage: (value: string) => {return value},
+
 });
 
 export const useNavigator = () => {

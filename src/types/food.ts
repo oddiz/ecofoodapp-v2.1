@@ -1,3 +1,5 @@
+
+
 export type Food = {
   id: number;
   name: string;
@@ -11,7 +13,7 @@ export type Food = {
   weight: number;
   price: number;
 };
-
+export type SortableProperty = 'cal' | 'weight' | 'carb' | 'fat' | 'pro' | 'vit';
 export type FoodType =
   | "Raw"
   | "Campfire"
@@ -20,25 +22,49 @@ export type FoodType =
   | "Cast Iron Stove"
   | "Stove";
 
-export type ICalculateFilters = {
+export type FoodTier = "Tier-4" | "Tier-3" | "Tier-2" | "Tier-1" | "Tier-0";
+export type ISortOption = {
+    id: string;
+    label: string;
+    desc: boolean;
+};
+export type SortOptionId = 
+  | "total_nutrients"
+  | "name"
+  | "calories"
+  | "weight"
+  | "carb"
+  | "fat"
+  | "pro"
+  | "vit";
+  
+
+
+
+export type FilterState = {
+  tier: FoodTier[];
+  type: FoodType[];
+  sort: ISortOption;
   maxBudget: number;
   maxCalories: number;
 };
-export type IFoods = {
-  selected: Food[];
-  stomach: Food[];
+
+export type ICalculatorFilters = {
+  maxBudget: number;
+  maxCalories: number;
 };
+
 export type ITastePref = Record<string, number>;
 
 export type CalculateParameters = {
-  foods: IFoods;
-  filters: ICalculateFilters | null;
+  selectedFoods: Food[];
+  stomachFoods: Food[];
+  filters: FilterState
   taste: Map<string, number>;
   menuSize: number;
-  calculateType: "definitive" | "random";
+  calculateType: "default" | "random";
 };
 export type StartWorkerMessage = {
-  origin: string;
   message: "start_worker";
 } & CalculateParameters;
 export type CalculateSPResult = {

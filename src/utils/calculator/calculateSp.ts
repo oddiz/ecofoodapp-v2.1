@@ -3,7 +3,7 @@ import type { CalculateSPResult, Food } from "@/types/food";
 export function calculateSP(
   menu: Food[],
   stomach: Food[],
-  taste: Map<string, number>
+  taste: Map<string, number>,
 ): CalculateSPResult {
   //accepts an array of food objects
 
@@ -14,7 +14,7 @@ export function calculateSP(
 
     for (const food of menu) {
       calWeightedTaste =
-        calWeightedTaste + (taste.get(food.id.toString()) || 1) * food.cal;
+        calWeightedTaste + (taste.get(food.id.toString()) ?? 1) * food.cal;
     }
 
     return calWeightedTaste / totalCal;
@@ -32,7 +32,7 @@ export function calculateSP(
       total.price += food.price;
       return total;
     },
-    { cal: 0, carb: 0, pro: 0, vit: 0, fat: 0, price: 0 }
+    { cal: 0, carb: 0, pro: 0, vit: 0, fat: 0, price: 0 },
   );
 
   const totalNutrients = totals.carb + totals.pro + totals.fat + totals.vit;

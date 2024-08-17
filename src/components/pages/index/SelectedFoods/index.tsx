@@ -1,9 +1,8 @@
-import { Food } from "@/types/food";
+import { type Food } from "@/types/food";
 import Image from "next/image";
-import SimpleBar from "simplebar-react";
-import "simplebar-react/dist/simplebar.min.css";
 import { ImCross } from "react-icons/im";
-import { CSSGrid, layout } from "react-stonecutter";
+import { layout } from "react-stonecutter";
+import { GridComponent } from "@/components/pages/index/IndexContent";
 
 export function SelectedFoodsSection({
     selectedFoods,
@@ -20,9 +19,10 @@ export function SelectedFoodsSection({
             id="selected-foods"
             className=" m-0 flex h-full w-full flex-col items-center  overflow-hidden   "
         >
-            <SimpleBar className=" no-scrollbar flex h-full w-full flex-shrink flex-grow justify-center overflow-auto ">
-                {/*@ts-ignore-next-line */}
-                <CSSGrid
+          
+                <div className="block justify-self-center"
+                >
+                <GridComponent
                     component="div"
                     columns={1}
                     columnWidth={398}
@@ -30,7 +30,6 @@ export function SelectedFoodsSection({
                     gutterHeight={2}
                     layout={layout.simple}
                     duration={150}
-                    className="block justify-self-center"
                 >
                     {reverseFoods.map((food) => (
                         <div
@@ -43,8 +42,8 @@ export function SelectedFoodsSection({
                             />
                         </div>
                     ))}
-                </CSSGrid>
-            </SimpleBar>
+                </GridComponent>
+                </div>
             <button
                 className={
                     (disabled

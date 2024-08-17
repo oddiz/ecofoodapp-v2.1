@@ -1,8 +1,28 @@
-import { Food } from "@/types/food";
-import { ResponsivePie } from "@nivo/pie";
-import { animated } from "@react-spring/web";
+import PieChart from "@/components/NivoComponents";
+import { type PieSvgProps, type PieCustomLayerProps, type MayHaveLabel, type PieCustomLayer } from '@nivo/pie'
+import { animated } from 'react-spring';
+interface PieChartData {
+  id: string | number
+  value: number
+  label?: string
+  // Add any other properties your data might have
+}
 
-export const PieChartFromFood = ({
+
+interface Food {
+    carb: number;
+    pro: number;
+    fat: number;
+    vit: number;
+}
+PieChart
+
+
+
+
+
+
+const PieChartFromFood = ({
     food,
     labels,
     interactive,
@@ -19,16 +39,17 @@ export const PieChartFromFood = ({
     ];
 
     const totalNutrients = food.carb + food.fat + food.pro + food.vit;
-    const CenteredMetric = ({ dataWithArc, centerX, centerY }: any) => {
+
+    const CenteredMetric: React.FC<PieCustomLayerProps<PieChartData>> = ({  centerX, centerY }) => {
         return (
             <g className="h-96 w-96 bg-white">
                 {labels && (
                     <text
-                        x={centerX - 0.5}
+                        x={centerX}
                         y={centerY}
                         textAnchor="middle"
                         dominantBaseline="central"
-                        className=" font-base  "
+                        className="font-base"
                         fill="#fff"
                     >
                         {totalNutrients}
@@ -38,10 +59,44 @@ export const PieChartFromFood = ({
         );
     };
 
+    const ArcLabelsComponent: NonNullable<PieSvgProps<PieChartData>['arcLabelsComponent']> = ({ datum, label, style }) => {
+        const typedStyle = style ;
+        const typedDatum = datum ;
+        return (
+            <animated.g
+                transform={typedStyle.transform}
+                style={{ pointerEvents: "none" }}
+            >
+                <circle
+                    fill={typedStyle.textColor}
+                    cy={6}
+                    r={9}
+                />
+                <circle
+                    fill="#ffffff"
+                    stroke={typedDatum.color}
+                    strokeWidth={2}
+                    r={10}
+                />
+                <text
+                    textAnchor="middle"
+                    dominantBaseline="central"
+                    fill={typedStyle.textColor}
+                    style={{
+                        fontSize: 8,
+                        fontWeight: 800,
+                    }}
+                >
+                    {label}
+                </text>
+            </animated.g>
+        );
+    };
+
     return (
-        <ResponsivePie
+        <PieChart
             data={data}
-            layers={["arcs", "arcLabels", "arcLinkLabels", "legends", CenteredMetric]}
+            layers={["arcs", "arcLabels", "arcLinkLabels", "legends", CenteredMetric as PieCustomLayer<MayHaveLabel>]}
             innerRadius={labels ? 0.3 : 0}
             padAngle={0.7}
             cornerRadius={0}
@@ -61,35 +116,7 @@ export const PieChartFromFood = ({
                 modifiers: [["darker", 2]],
             }}
             motionConfig="stiff"
-            arcLabelsComponent={({ datum, label, style }) => (
-                <animated.g
-                    transform={style.transform}
-                    style={{ pointerEvents: "none" }}
-                >
-                    <circle
-                        fill={style.textColor}
-                        cy={6}
-                        r={9}
-                    />
-                    <circle
-                        fill="#ffffff"
-                        stroke={datum.color}
-                        strokeWidth={2}
-                        r={10}
-                    />
-                    <text
-                        textAnchor="middle"
-                        dominantBaseline="central"
-                        fill={style.textColor}
-                        style={{
-                            fontSize: 8,
-                            fontWeight: 800,
-                        }}
-                    >
-                        {label}
-                    </text>
-                </animated.g>
-            )}
+            arcLabelsComponent={ArcLabelsComponent as PieSvgProps<MayHaveLabel>['arcLabelsComponent']}
             defs={[
                 {
                     id: "dots",
@@ -110,53 +137,31 @@ export const PieChartFromFood = ({
                     spacing: 10,
                 },
             ]}
-            tooltip={ChartTooltip}
+            tooltip={({ datum }) => (
+                <div
+                    style={{
+                        padding: 6,
+                        color: datum.color,
+                        background: "#222230",
+                        borderRadius: 10,
+                        zIndex: 100,
+                        overflow: "visible",
+                    }}
+                >
+                    <strong>
+                        {datum.label}: {datum.value}
+                    </strong>
+                </div>
+            )}
             colors={{ datum: "data.color" }}
             fill={[
-                {
-                    match: {
-                        id: "carbs",
-                    },
-                    id: "dots",
-                },
-                {
-                    match: {
-                        id: "proteins",
-                    },
-                    id: "lines",
-                },
-                {
-                    match: {
-                        id: "fat",
-                    },
-                    id: "dots",
-                },
-                {
-                    match: {
-                        id: "vitamin",
-                    },
-                    id: "lines",
-                },
+                { match: { id: "carbs" }, id: "dots" },
+                { match: { id: "proteins" }, id: "lines" },
+                { match: { id: "fat" }, id: "dots" },
+                { match: { id: "vitamin" }, id: "lines" },
             ]}
         />
     );
 };
 
-const ChartTooltip = ({ datum: { label, value, color } }: any) => {
-    return (
-        <div
-            style={{
-                padding: 6,
-                color,
-                background: "#222230",
-                borderRadius: 10,
-                zIndex: 100,
-                overflow: "visible",
-            }}
-        >
-            <strong>
-                {label}: {value}
-            </strong>
-        </div>
-    );
-};
+export default PieChartFromFood;
