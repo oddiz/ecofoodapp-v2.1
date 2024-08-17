@@ -1,14 +1,29 @@
-import { GeistSans } from "geist/font/sans";
-import { type AppType } from "next/app";
+import "../styles/globals.css";
+import { SearchProvider } from "@/hooks/useSearch";
+import type { AppProps } from "next/app";
+import Head from "next/head";
+import { Navigator } from "@/components/Nav/Navigator";
+import { Header } from "@/components/Header/Header";
+import { NavProvider } from "@/hooks/useNavigator";
 
-import "@/styles/globals.css";
-
-const MyApp: AppType = ({ Component, pageProps }) => {
+export function EcoFoodApp({
+  Component,
+  pageProps: { ...pageProps },
+}: AppProps) {
   return (
-    <div className={GeistSans.className}>
-      <Component {...pageProps} />
-    </div>
+    <NavProvider>
+      <SearchProvider>
+        <Head>
+          <title>Eco Food App</title>
+        </Head>
+        <main className="bg-primary-100 dark:bg-primarydark-600 flex h-screen flex-1 flex-row overflow-y-hidden">
+          <Navigator />
+          <div className="flex flex-1 flex-col">
+            <Header />
+            <Component {...pageProps} />
+          </div>
+        </main>
+      </SearchProvider>
+    </NavProvider>
   );
-};
-
-export default MyApp;
+}
