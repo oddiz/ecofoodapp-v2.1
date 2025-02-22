@@ -1,30 +1,30 @@
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   type ICalcWorkerMessage,
-  type IBestMenus,
   type CalculateParameters,
   type StartWorkerMessage,
+  type CalculateSPResult,
 } from "@/types/food";
 
 class CustomEventEmitter {
-  private listeners: Record<string, Array<(...args: unknown[]) => void>> = {};
+  private listeners: Record<string, Array<(...args: any[]) => void>> = {};
 
-  on(event: string, callback: (...args: unknown[]) => void): void {
+  on(event: string, callback: (...args: any[]) => void): void {
     if (!this.listeners[event]) {
       this.listeners[event] = [];
     }
     this.listeners[event].push(callback);
   }
 
-  emit(event: string, ...args: unknown[]): void {
+  emit(event: string, ...args: any[]): void {
     const eventListeners = this.listeners[event];
     if (eventListeners) {
-      eventListeners.forEach((callback: (...args: unknown[]) => void) =>
-        callback(...args),
-      );
+      eventListeners.forEach((callback) => callback(...args));
     }
   }
 
-  off(event: string, callback: (...args: unknown[]) => void): void {
+  off(event: string, callback: (...args: any[]) => void): void {
     const eventListeners = this.listeners[event];
     if (eventListeners) {
       this.listeners[event] = eventListeners.filter((cb) => cb !== callback);
@@ -33,53 +33,100 @@ class CustomEventEmitter {
 }
 
 export class WorkerController extends CustomEventEmitter {
-  worker: Worker;
-  bestMenus: null | IBestMenus;
-  calculateParameters: null | CalculateParameters;
+  private worker: Worker;
+  bestMenus: CalculateSPResult | null = null;
+  private calculateParameters: CalculateParameters | null = null;
+  private startTime: number | null = null;
+  private updateInterval = 1000; // Update interval in milliseconds
+  private updateTimer: number | null = null;
 
-  state: "idle" | "calculating" | "done";
+  state: "idle" | "calculating" | "done" = "idle";
 
   constructor(worker: Worker) {
     super();
     this.worker = worker;
-
-    this.state = "idle";
-    this.bestMenus = null;
-    this.worker.onmessage = (message: MessageEvent<ICalcWorkerMessage>) =>
-      this.processMessage(message);
-    this.processMessage.bind(this);
-
-    this.calculateParameters = null;
+    this.worker.onmessage = this.processMessage.bind(this);
   }
 
-  private processMessage(message: MessageEvent<ICalcWorkerMessage>) {
-    if (message.data.op === "best_menus_update") {
-      this.bestMenus = message.data.result;
-      this.emit("best_menus_update");
-    } else if (message.data.op === "calculation_end") {
-      this.state = "done";
-      this.emit("done");
-    } else {
-      console.error("Unknown message received from worker: ", message);
+  private processMessage(event: MessageEvent<ICalcWorkerMessage>): void {
+    const { data } = event;
+
+    switch (data?.op) {
+      case "best_menus_update":
+        this.bestMenus = data.result;
+        console.log(`Best menus updated: ${JSON.stringify(this.bestMenus)}`);
+        this.emit("best_menus_update", this.bestMenus);
+        break;
+      case "calculation_end":
+        this.state = "done";
+        console.log(`Calculation ended:`, this.bestMenus);
+        this.emit("calculation_end", this.bestMenus);
+        break;
+      default:
+        console.error("Unknown message received from worker:", event);
     }
   }
 
-  postMessage(message: StartWorkerMessage) {
-    this.worker.postMessage(message);
+  private startPeriodicUpdates(): void {
+    this.updateTimer = window.setInterval(() => {
+      if (this.bestMenus) {
+        this.emit("progress_update", {
+          bestMenus: this.bestMenus,
+          elapsedTime: Date.now() - (this.startTime ?? Date.now()),
+        });
+      }
+    }, this.updateInterval);
   }
 
-  terminate() {
-    this.state = "idle";
-    this.worker.terminate();
+  private stopPeriodicUpdates(): void {
+    if (this.updateTimer !== null) {
+      window.clearInterval(this.updateTimer);
+      this.updateTimer = null;
+    }
   }
 
-  start(calcParams: CalculateParameters) {
+  start(calcParams: CalculateParameters): void {
+    if (this.state === "calculating") {
+      console.warn("Calculation already in progress. Ignoring start request.");
+      return;
+    }
+
     this.state = "calculating";
     this.calculateParameters = calcParams;
-
-    this.postMessage({
+    this.bestMenus = null;
+    this.startTime = Date.now();
+    console.log("Starting calculation with parameters:", calcParams);
+    console.log("Worker:", this.worker);
+    this.worker.postMessage({
       message: "start_worker",
-      ...calcParams
+      source: "calculator",
+      ...calcParams,
     } as StartWorkerMessage);
+
+    this.emit("calculation_start", calcParams);
+  }
+
+  stop(): void {
+    if (this.state !== "calculating") {
+      console.warn("No calculation in progress. Ignoring stop request.");
+      return;
+    }
+
+    this.worker.terminate();
+    this.stopPeriodicUpdates();
+    this.state = "idle";
+    this.emit("calculation_stop");
+  }
+
+  getState(): "idle" | "calculating" | "done" {
+    return this.state;
+  }
+
+  getBestMenu(): CalculateSPResult | null {
+    return this.bestMenus;
+  }
+
+  getCalculateParameters(): CalculateParameters | null {
+    return this.calculateParameters;
   }
 }

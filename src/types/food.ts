@@ -1,5 +1,3 @@
-
-
 export type Food = {
   id: number;
   name: string;
@@ -13,7 +11,13 @@ export type Food = {
   weight: number;
   price: number;
 };
-export type SortableProperty = 'cal' | 'weight' | 'carb' | 'fat' | 'pro' | 'vit';
+export type SortableProperty =
+  | "cal"
+  | "weight"
+  | "carb"
+  | "fat"
+  | "pro"
+  | "vit";
 export type FoodType =
   | "Raw"
   | "Campfire"
@@ -24,11 +28,11 @@ export type FoodType =
 
 export type FoodTier = "Tier-4" | "Tier-3" | "Tier-2" | "Tier-1" | "Tier-0";
 export type ISortOption = {
-    id: string;
-    label: string;
-    desc: boolean;
+  id: string;
+  label: string;
+  desc: boolean;
 };
-export type SortOptionId = 
+export type SortOptionId =
   | "total_nutrients"
   | "name"
   | "calories"
@@ -37,9 +41,6 @@ export type SortOptionId =
   | "fat"
   | "pro"
   | "vit";
-  
-
-
 
 export type FilterState = {
   tier: FoodTier[];
@@ -59,12 +60,13 @@ export type ITastePref = Record<string, number>;
 export type CalculateParameters = {
   selectedFoods: Food[];
   stomachFoods: Food[];
-  filters: FilterState
+  filters: FilterState;
   taste: Map<string, number>;
   menuSize: number;
   calculateType: "default" | "random";
 };
 export type StartWorkerMessage = {
+  source: "calculator";
   message: "start_worker";
 } & CalculateParameters;
 export type CalculateSPResult = {
@@ -95,14 +97,10 @@ export type IBestMenu = {
   result: CalculateSPResult;
   index: number;
 };
-export type IBestMenus = {
-  scholar: IBestMenu | null; // best sp menu
-  worker: IBestMenu | null; // best cal per dollar menu
-  student: IBestMenu | null; // best sp per dollar menu
-};
+
 export type IBestMenusMessage = {
   op: "best_menus_update";
-  result: IBestMenus;
+  result: CalculateSPResult;
 };
 
 export type ICalculationEndMessage = {
