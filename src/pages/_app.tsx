@@ -6,17 +6,14 @@ import { Navigator } from "@/components/Nav/Navigator";
 import { Header } from "@/components/Header/Header";
 import { NavProvider } from "@/hooks/useNavigator";
 
-function EcoFoodApp({
-  Component,
-  pageProps,
-}: AppProps) {
+function EcoFoodApp({ Component, pageProps }: AppProps) {
   return (
     <NavProvider>
       <SearchProvider>
         <Head>
           <title>Eco Food App</title>
         </Head>
-        <main className="bg-primary-100 dark:bg-primarydark-600 flex h-screen flex-1 flex-row overflow-y-hidden">
+        <main className="bg-primarydark-600 flex h-screen flex-1 flex-row overflow-y-hidden">
           <Navigator />
           <div className="flex flex-1 flex-col">
             <Header />

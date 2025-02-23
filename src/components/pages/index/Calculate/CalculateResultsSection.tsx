@@ -6,7 +6,7 @@ export const CalculateResultsSection: React.FC = () => {
 
   if (!calculationResults) {
     return (
-      <div className="flex flex-col items-center p-6 bg-white dark:bg-gray-800 rounded-lg shadow-lg">
+      <div className="flex flex-col items-center p-6 bg-gray-800 rounded-lg shadow-lg">
         <h2 className="text-2xl font-bold mb-4">Calculation Results</h2>
         <p>No results found</p>
       </div>
@@ -15,7 +15,7 @@ export const CalculateResultsSection: React.FC = () => {
   const { sp, multipliers, totals } = calculationResults;
 
   return (
-    <div className="flex flex-col items-center p-6 bg-white dark:bg-gray-800 rounded-lg shadow-lg">
+    <div className="flex flex-col items-center p-6 bg-gray-800 rounded-lg shadow-lg">
       <h2 className="text-2xl font-bold mb-4">Calculation Results</h2>
       <p className="text-xl mb-2">SP: {sp.toFixed(2)}</p>
       <div className="mb-4">

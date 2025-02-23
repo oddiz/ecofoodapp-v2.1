@@ -1,9 +1,13 @@
-import { Popover, PopoverButton, PopoverPanel, Switch } from "@headlessui/react";
+import {
+  Popover,
+  PopoverButton,
+  PopoverPanel,
+  Switch,
+} from "@headlessui/react";
 import { FaFilter } from "react-icons/fa";
-import { useCallback, useState} from "react";
+import { useCallback, useState } from "react";
 import { type FoodTier, type FoodType } from "@/types/food";
 import { useStore } from "@/store/useStore";
-
 
 export function FilterButton() {
   const allTierFilters: FoodTier[] = [
@@ -29,31 +33,21 @@ export function FilterButton() {
       </PopoverButton>
 
       <PopoverPanel className="text-primary-600 absolute z-10">
-        <div className="dark:bg-primarydark-100 flex w-40 flex-col rounded-xl text-lg">
-          <header className="dark:border-b-primarydark-300 flex h-12 items-center border-b-2 pl-4">
+        <div className="bg-primarydark-100 flex w-40 flex-col rounded-xl text-lg">
+          <header className="border-b-primarydark-300 flex h-12 items-center border-b-2 pl-4">
             Tier:
           </header>
           <div className="flex w-full flex-col p-2">
             {allTierFilters.map((type: FoodTier) => {
-              return (
-                <TierFilterButton
-                  key={type}
-                  label={type}
-                />
-              );
+              return <TierFilterButton key={type} label={type} />;
             })}
           </div>
-          <header className="dark:border-b-primarydark-300 flex h-12 items-center border-b-2 pl-4">
+          <header className="border-b-primarydark-300 flex h-12 items-center border-b-2 pl-4">
             Type:
           </header>
           <div className="flex w-full flex-col p-2">
             {allTypeFilters.map((type: FoodType) => {
-              return (
-                <TypeFilterButton
-                  key={type}
-                  label={type}
-                />
-              );
+              return <TypeFilterButton key={type} label={type} />;
             })}
           </div>
         </div>
@@ -62,11 +56,7 @@ export function FilterButton() {
   );
 }
 
-function TypeFilterButton({
-  label,
-}: {
-  label: FoodType;
-  }) {
+function TypeFilterButton({ label }: { label: FoodType }) {
   const filters = useStore((state) => state.activeFilters);
   const setFilters = useStore((state) => state.setActiveFilters);
   const [enabled, setEnabled] = useState(
@@ -80,14 +70,12 @@ function TypeFilterButton({
         ...filters,
         type: filters.type.filter((type) => type !== label),
       });
-    }
-    else {
+    } else {
       setFilters({
         ...filters,
         type: [...filters.type, label],
       });
     }
-     
   }
   return (
     <div key={label} className="flex h-9 flex-row items-center">
@@ -110,11 +98,7 @@ function TypeFilterButton({
     </div>
   );
 }
-function TierFilterButton({
-  label,
-}: {
-  label: FoodTier;
-  }) {
+function TierFilterButton({ label }: { label: FoodTier }) {
   const activeFilters = useStore((state) => state.activeFilters);
   const setFilters = useStore((state) => state.setActiveFilters);
   const [enabled, setEnabled] = useState(
