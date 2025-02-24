@@ -10,36 +10,33 @@ await import("./src/env.js");
 /** @type {import("next").NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
-  output: 'export',
+  output: "export",
+  trailingSlash: true,
+
   images: {
     unoptimized: true,
   },
-
-  
 
   /**
    * If you are using `appDir` then you must comment the below `i18n` config out.
    *
    * @see https://github.com/vercel/next.js/issues/41980
    */
-  
-  
+
   // Add experimental features to support top-level await
   transpilePackages: [
-    '@nivo/pie',
-    'd3-scale',
-    'd3-scale-chromatic',
-    'd3-color',
-    'd3-interpolate',
-    'd3-format',
-    'd3-time',
-    'd3-time-format'
+    "@nivo/pie",
+    "d3-scale",
+    "d3-scale-chromatic",
+    "d3-color",
+    "d3-interpolate",
+    "d3-format",
+    "d3-time",
+    "d3-time-format",
   ],
   experimental: {
-    esmExternals: 'loose',
+    esmExternals: "loose",
   },
-
-
 };
 
 export default nextConfig;

@@ -54,7 +54,7 @@ export class WorkerController extends CustomEventEmitter {
     switch (data?.op) {
       case "best_menus_update":
         this.bestMenus = data.result;
-        console.log(`Best menus updated: ${JSON.stringify(this.bestMenus)}`);
+        console.log(`Best menus updated:`, this.bestMenus);
         this.emit("best_menus_update", this.bestMenus);
         break;
       case "calculation_end":
@@ -113,7 +113,6 @@ export class WorkerController extends CustomEventEmitter {
     }
 
     this.worker.terminate();
-    this.stopPeriodicUpdates();
     this.state = "idle";
     this.emit("calculation_stop");
   }

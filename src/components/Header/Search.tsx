@@ -24,7 +24,7 @@ export const Search = ({ className }: { className: string }) => {
       <div className="relative h-full min-w-[24rem] max-w-2xl">
         <input
           ref={searchRef}
-          className="h-full w-full rounded-md bg-transparent px-3 text-lg  outline-none bg-primarydark-500 text-primary-300 focus:bg-primarydark-400"
+          className="h-full w-full rounded-md px-3 text-lg  outline-none bg-primarydark-400 text-primary-300 focus:bg-primarydark-300 caret-secondary-800"
           placeholder="Search..."
           value={searchInput}
           onChange={(e) => setSearchInput(e.target.value)}

@@ -1,13 +1,16 @@
-export interface Pokedex {
-  AllItems: Record<string, AllItem>;
+export interface AllItemsAPI {
+  AllItems: Record<string, Item>;
 }
 
-export interface AllItem {
+export interface Item {
   Tags: string[];
   Fuel: number;
   PropertyInfos: PropertyInfos;
 }
 
+/** 
+Nutrition.Nutrients = "- \u003Ccolor=#F54F12FF\u003ECarbs: \u003Cmspace=0.5em\u003E\u003Cpos=4.0em\u003E   9,0\u003C/pos\u003E\u003C/mspace\u003E\u003C/color\u003E\n- \u003Ccolor=#FFAE00FF\u003EProtein: \u003Cmspace=0.5em\u003E\u003Cpos=4.0em\u003E   3,0\u003C/pos\u003E\u003C/mspace\u003E\u003C/color\u003E\n- \u003Ccolor=#FFD21AFF\u003EFat: \u003Cmspace=0.5em\u003E\u003Cpos=4.0em\u003E  10,0\u003C/pos\u003E\u003C/mspace\u003E\u003C/color\u003E\n- \u003Ccolor=#A7D20FFF\u003EVitamins: \u003Cmspace=0.5em\u003E\u003Cpos=4.0em\u003E   2,0\u003C/pos\u003E\u003C/mspace\u003E\u003C/color\u003E"
+*/
 export interface PropertyInfos {
   DisplayNamePlural: BrokenDescription;
   UIName?: ArrowPrefab;

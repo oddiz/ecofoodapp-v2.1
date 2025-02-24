@@ -7,7 +7,7 @@ import {
 import { FaFilter } from "react-icons/fa";
 import { useCallback, useState } from "react";
 import { type FoodTier, type FoodType } from "@/types/food";
-import { useStore } from "@/store/useStore";
+import { useFoodStore } from "@/store/useFoodStore";
 
 export function FilterButton() {
   const allTierFilters: FoodTier[] = [
@@ -18,21 +18,21 @@ export function FilterButton() {
     "Tier-0",
   ];
   const allTypeFilters: FoodType[] = [
-    "Stove",
-    "Cast Iron Stove",
-    "Kitchen",
-    "Bakery",
+    "Kitchen/Stove",
+    "Cast Iron Stove/Bakery",
     "Campfire",
-    "Raw",
+    "Campfire Charred",
+    "Raw Food",
+    "Unknown",
   ];
 
   return (
-    <Popover className="relative">
-      <PopoverButton>
-        <FaFilter />
+    <Popover>
+      <PopoverButton className="flex items-center justify-center">
+        <FaFilter className="hover:fill-primary-800 " size={23} />
       </PopoverButton>
 
-      <PopoverPanel className="text-primary-600 absolute z-10">
+      <PopoverPanel className="text-primary-600 absolute z-50">
         <div className="bg-primarydark-100 flex w-40 flex-col rounded-xl text-lg">
           <header className="border-b-primarydark-300 flex h-12 items-center border-b-2 pl-4">
             Tier:
@@ -57,8 +57,8 @@ export function FilterButton() {
 }
 
 function TypeFilterButton({ label }: { label: FoodType }) {
-  const filters = useStore((state) => state.activeFilters);
-  const setFilters = useStore((state) => state.setActiveFilters);
+  const filters = useFoodStore((state) => state.activeFilters);
+  const setFilters = useFoodStore((state) => state.setActiveFilters);
   const [enabled, setEnabled] = useState(
     filters?.type.includes(label) ?? false,
   );
@@ -92,15 +92,13 @@ function TypeFilterButton({ label }: { label: FoodType }) {
           } inline-block h-3 w-3 transform rounded-full bg-white transition`}
         />
       </Switch>
-      <div className="flex w-full justify-start pl-4 text-base">
-        {label === "Cast Iron Stove" ? "Cast Iron" : label}
-      </div>
+      <div className="flex w-full justify-start pl-4 text-base">{label}</div>
     </div>
   );
 }
 function TierFilterButton({ label }: { label: FoodTier }) {
-  const activeFilters = useStore((state) => state.activeFilters);
-  const setFilters = useStore((state) => state.setActiveFilters);
+  const activeFilters = useFoodStore((state) => state.activeFilters);
+  const setFilters = useFoodStore((state) => state.setActiveFilters);
   const [enabled, setEnabled] = useState(
     activeFilters.tier.includes(label) ?? false,
   );

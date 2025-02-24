@@ -1,8 +1,8 @@
 import React from "react";
-import { useStore } from "@/store/useStore";
+import { useFoodStore } from "@/store/useFoodStore";
 
 export const CalculateResultsSection: React.FC = () => {
-  const { calculationResults, selectedFoods } = useStore();
+  const { calculationResults } = useFoodStore();
 
   if (!calculationResults) {
     return (
@@ -15,7 +15,7 @@ export const CalculateResultsSection: React.FC = () => {
   const { sp, multipliers, totals } = calculationResults;
 
   return (
-    <div className="flex flex-col items-center p-6 bg-gray-800 rounded-lg shadow-lg">
+    <div className="flex flex-col flex-shrink-0 items-center p-6 bg-gray-800 rounded-lg shadow-lg">
       <h2 className="text-2xl font-bold mb-4">Calculation Results</h2>
       <p className="text-xl mb-2">SP: {sp.toFixed(2)}</p>
       <div className="mb-4">
@@ -32,14 +32,7 @@ export const CalculateResultsSection: React.FC = () => {
         <p>Vitamins: {totals.vit}g</p>
         <p>Price: ${totals.price.toFixed(2)}</p>
       </div>
-      <div className="mb-4">
-        <h3 className="text-lg font-semibold mb-2">Selected Foods:</h3>
-        <ul>
-          {selectedFoods.map((food) => (
-            <li key={food.id}>{food.name}</li>
-          ))}
-        </ul>
-      </div>
+      <div className="mb-4"></div>
     </div>
   );
 };

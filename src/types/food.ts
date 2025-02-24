@@ -9,7 +9,6 @@ export type Food = {
   vit: number;
   cal: number;
   weight: number;
-  price: number;
 };
 export type SortableProperty =
   | "cal"
@@ -19,12 +18,12 @@ export type SortableProperty =
   | "pro"
   | "vit";
 export type FoodType =
-  | "Raw"
+  | "Kitchen/Stove"
+  | "Cast Iron Stove/Bakery"
   | "Campfire"
-  | "Bakery"
-  | "Kitchen"
-  | "Cast Iron Stove"
-  | "Stove";
+  | "Campfire Charred"
+  | "Raw Food"
+  | "Unknown";
 
 export type FoodTier = "Tier-4" | "Tier-3" | "Tier-2" | "Tier-1" | "Tier-0";
 export type ISortOption = {
@@ -60,7 +59,6 @@ export type ITastePref = Record<string, number>;
 export type CalculateParameters = {
   selectedFoods: Food[];
   stomachFoods: Food[];
-  filters: FilterState;
   taste: Map<string, number>;
   menuSize: number;
   calculateType: "default" | "random";
@@ -89,6 +87,12 @@ export type CalculateSPResult = {
   };
 };
 
+export enum IBestMenuTypes {
+  SCHOLAR = "scholar",
+  WORKER = "worker",
+  STUDENT = "student",
+}
+
 export type IBestMenu = {
   foods: {
     menu: Food[];
@@ -96,6 +100,13 @@ export type IBestMenu = {
   };
   result: CalculateSPResult;
   index: number;
+  type: IBestMenuTypes;
+};
+
+export type IBestMenus = {
+  scholar: IBestMenu | null;
+  worker: IBestMenu | null;
+  student: IBestMenu | null;
 };
 
 export type IBestMenusMessage = {

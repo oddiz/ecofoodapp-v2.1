@@ -1,10 +1,11 @@
 import { useMemo } from "react";
-import type { Food, FilterState, FoodTier, SortableProperty } from "@/types/food";
-
-
+import type { Food, FoodTier, SortableProperty } from "@/types/food";
+import { useFoodStore } from "@/store/useFoodStore";
+import { useSearch } from "@/hooks/useSearch";
+import { useServerStore } from "@/store/useServerStore";
 
 const isSortableProperty = (property: string): property is SortableProperty => {
-  return ['cal', 'weight', 'carb', 'fat', 'pro', 'vit'].includes(property);
+  return ["cal", "weight", "carb", "fat", "pro", "vit"].includes(property);
 };
 
 const getSortValue = (food: Food, property: SortableProperty): number => {
@@ -14,42 +15,42 @@ const getSortValue = (food: Food, property: SortableProperty): number => {
   return 0;
 };
 
-export const useFoodFilter = (
-  foods: Food[],
-  filters: FilterState,
-  searchInput: string
-) => {
+export const useFoodFilter = () => {
+  const { currentServerFoods } = useServerStore();
+  const { activeFilters } = useFoodStore();
+  const { searchInput } = useSearch();
   return useMemo(() => {
-    let filteredFoods = foods;
+    let filteredFoods = currentServerFoods;
 
     // Apply search filter
     if (searchInput.length > 0) {
-      filteredFoods = filteredFoods.filter((food) => 
-        food.name.toLowerCase().includes(searchInput.toLowerCase())
+      filteredFoods = filteredFoods.filter((food) =>
+        food.name.toLowerCase().includes(searchInput.toLowerCase()),
       );
     }
 
     // Apply type filter
-    if (filters.type.length > 0) {
-      filteredFoods = filteredFoods.filter((food) => 
-        filters.type.includes(food.type)
+    if (activeFilters.type.length > 0) {
+      filteredFoods = filteredFoods.filter((food) =>
+        activeFilters.type.includes(food.type),
       );
     }
 
     // Apply tier filter
-    if (filters.tier.length > 0) {
-      filteredFoods = filteredFoods.filter((food) => 
-        filters.tier.includes(("Tier-" + String(food.tier)) as FoodTier)
+    if (activeFilters.tier.length > 0) {
+      filteredFoods = filteredFoods.filter((food) =>
+        activeFilters.tier.includes(("Tier-" + String(food.tier)) as FoodTier),
       );
     }
 
     // Sort foods
     filteredFoods.sort((a, b) => {
-      const { id, desc } = filters.sort;
+      const { id, desc } = activeFilters.sort;
       let result: number;
 
       if (id === "total_nutrients") {
-        result = (b.carb + b.vit + b.fat + b.pro) - (a.carb + a.vit + a.fat + a.pro);
+        result =
+          b.carb + b.vit + b.fat + b.pro - (a.carb + a.vit + a.fat + a.pro);
       } else if (id === "name") {
         result = a.name.localeCompare(b.name);
       } else if (isSortableProperty(id)) {
@@ -62,5 +63,11 @@ export const useFoodFilter = (
     });
 
     return filteredFoods;
-  }, [foods, filters, searchInput]);
+  }, [
+    activeFilters.sort,
+    activeFilters.tier,
+    activeFilters.type,
+    currentServerFoods,
+    searchInput,
+  ]);
 };

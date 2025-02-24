@@ -1,9 +1,47 @@
 import { Search } from "./Search";
+import { FaServer } from "react-icons/fa6";
+import { Popover, PopoverButton, PopoverPanel } from "@headlessui/react";
+import { useServerStore } from "@/store/useServerStore";
 
 export const Header = () => {
+  const currentServer = useServerStore((state) => state.currentServer);
+  const servers = useServerStore((state) => state.availableServers);
+  const setCurrentServer = useServerStore((state) => state.setCurrentServer);
   return (
     <header className="flex h-24 w-full flex-shrink-0 flex-row border-b-[1px] py-5 px-5 border-b-primarydark-500 bg-primarydark-650">
       <Search className="h-full flex-grow" />
+      <div className="flex h-full flex-row items-center justify-end">
+        <Popover>
+          <PopoverButton className="h-full flex flex-row items-center justify-center text-primary-700 hover:text-primary-400">
+            <div className="m-3">{currentServer.name}</div>
+            <FaServer size={24} />
+          </PopoverButton>
+
+          <PopoverPanel
+            anchor="top end"
+            transition
+            className="divide-y  divide-white/5 rounded-xl bg-primarydark-700 text-sm/6 transition duration-200 ease-in-out [--anchor-gap:var(--spacing-5)] data-[closed]:-translate-y-1 data-[closed]:opacity-0 p-4"
+          >
+            <div className="text-primary-100 text-lg font-[Cubano]">
+              Available Servers
+            </div>
+            {servers.map((server) => (
+              <div
+                key={server.name}
+                className={`block text-base text-primary-400 ${
+                  server.name === currentServer.name
+                    ? "text-ecogreen-400 "
+                    : "hover:text-primary-200"
+                }`}
+              >
+                <button onClick={() => setCurrentServer(server)}>
+                  <div>{server.name}</div>
+                </button>
+              </div>
+            ))}
+          </PopoverPanel>
+        </Popover>
+      </div>
     </header>
   );
 };

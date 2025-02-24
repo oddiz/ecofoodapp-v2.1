@@ -1,6 +1,6 @@
 import { TbMeat } from "react-icons/tb";
 import { NavItem } from "./NavItem";
-import { IoStorefrontSharp, IoHeart } from "react-icons/io5";
+import { IoStorefrontSharp, IoHeart, IoSettingsSharp } from "react-icons/io5";
 import Image from "next/image";
 import { useNavigator } from "@/hooks/useNavigator";
 import Link from "next/link";
@@ -8,10 +8,10 @@ import Link from "next/link";
 export const Navigator: React.FC = () => {
   const navItems = [
     {
-      id: "home",
-      label: "Home",
+      id: "calculator",
+      label: "Calculator",
       icon: <TbMeat size={24} />,
-      link: "/",
+      link: "/calculator",
     },
     {
       id: "shops",
@@ -24,6 +24,12 @@ export const Navigator: React.FC = () => {
       label: "Taste",
       icon: <IoHeart size={24} />,
       link: "/taste",
+    },
+    {
+      id: "settings",
+      label: "Settings",
+      icon: <IoSettingsSharp size={24} />,
+      link: "/settings",
     },
   ];
   const { activePage, setActivePage } = useNavigator();
@@ -47,7 +53,7 @@ export const Navigator: React.FC = () => {
               id={item.id}
               icon={item.icon}
               label={item.label}
-              active={item.id === activePage}
+              active={item.link === activePage}
               onClickHandler={handleNavItemClick}
             />
           </Link>

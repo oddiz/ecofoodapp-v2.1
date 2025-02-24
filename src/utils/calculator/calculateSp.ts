@@ -29,7 +29,6 @@ export function calculateSP(
       total.vit += food.vit;
       total.pro += food.pro;
       total.cal += food.cal;
-      total.price += food.price;
       return total;
     },
     { cal: 0, carb: 0, pro: 0, vit: 0, fat: 0, price: 0 },

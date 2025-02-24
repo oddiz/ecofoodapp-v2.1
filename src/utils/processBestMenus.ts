@@ -1,4 +1,8 @@
-import { type CalculateSPResult, type IBestMenus } from "@/types/food";
+import {
+  IBestMenuTypes,
+  type CalculateSPResult,
+  type IBestMenus,
+} from "@/types/food";
 
 export function processBestMenus(
   prevBests: IBestMenus | null,
@@ -11,15 +15,35 @@ export function processBestMenus(
   if (!prevBests) {
     return {
       bests: {
-        scholar: { foods: newResult.foods, result: newResult, index: 0 },
-        worker: { foods: newResult.foods, result: newResult, index: 0 },
-        student: { foods: newResult.foods, result: newResult, index: 0 },
+        scholar: {
+          foods: newResult.foods,
+          result: newResult,
+          index: 0,
+          type: IBestMenuTypes.SCHOLAR,
+        },
+        worker: {
+          foods: newResult.foods,
+          result: newResult,
+          index: 0,
+          type: IBestMenuTypes.WORKER,
+        },
+        student: {
+          foods: newResult.foods,
+          result: newResult,
+          index: 0,
+          type: IBestMenuTypes.STUDENT,
+        },
       },
       updated: true,
     };
   }
   if (!prevBests.scholar) {
-    newBests.scholar = { foods: newResult.foods, result: newResult, index: 0 };
+    newBests.scholar = {
+      foods: newResult.foods,
+      result: newResult,
+      index: 0,
+      type: IBestMenuTypes.SCHOLAR,
+    };
     updated = true;
   } else if (prevBests.scholar && newResult.sp > prevBests.scholar.result.sp) {
     newBests.scholar = {
@@ -29,6 +53,7 @@ export function processBestMenus(
       },
       result: newResult,
       index: prevBests.scholar.index,
+      type: IBestMenuTypes.SCHOLAR,
     };
     updated = true;
   }
@@ -36,7 +61,12 @@ export function processBestMenus(
   const dollarPerCal = (result: CalculateSPResult) =>
     result.totals.price / result.totals.cal;
   if (!prevBests.worker) {
-    newBests.worker = { foods: newResult.foods, result: newResult, index: 0 };
+    newBests.worker = {
+      foods: newResult.foods,
+      result: newResult,
+      index: 0,
+      type: IBestMenuTypes.WORKER,
+    };
     updated = true;
   } else if (
     prevBests.worker &&
@@ -49,6 +79,7 @@ export function processBestMenus(
       },
       result: newResult,
       index: prevBests.worker.index,
+      type: IBestMenuTypes.WORKER,
     };
     updated = true;
   }
@@ -56,7 +87,12 @@ export function processBestMenus(
   const dollerPerSp = (result: CalculateSPResult) =>
     result.totals.price / result.sp;
   if (!prevBests.student) {
-    newBests.student = { foods: newResult.foods, result: newResult, index: 0 };
+    newBests.student = {
+      foods: newResult.foods,
+      result: newResult,
+      index: 0,
+      type: IBestMenuTypes.STUDENT,
+    };
     updated = true;
   } else if (
     prevBests.student &&
@@ -69,6 +105,7 @@ export function processBestMenus(
       },
       result: newResult,
       index: prevBests.student.index,
+      type: IBestMenuTypes.STUDENT,
     };
     updated = true;
   }

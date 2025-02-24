@@ -7,7 +7,7 @@ import {
   RadioGroup,
 } from "@headlessui/react";
 import { FaSortNumericDown } from "react-icons/fa";
-import { useStore } from "@/store/useStore"; // Adjust the import path as needed
+import { useFoodStore } from "@/store/useFoodStore"; // Adjust the import path as needed
 import type { ISortOption, Food, SortableProperty } from "@/types/food";
 
 const sortOptions: ISortOption[] = [
@@ -51,7 +51,7 @@ const sortFunctions: Record<string, (a: Food, b: Food) => number> = {
 
 export function SortButton() {
   const { activeFilters, setActiveFilters, selectedFoods, setSelectedFoods } =
-    useStore();
+    useFoodStore();
 
   function handleSortSelect(sortOption: ISortOption) {
     setActiveFilters({
@@ -86,13 +86,13 @@ export function SortButton() {
 
   return (
     <Popover className="relative">
-      <PopoverButton className="flex items-center">
-        <FaSortNumericDown />
+      <PopoverButton className="flex items-center hover:text-primary-800">
+        <FaSortNumericDown className="hover:fill-primary-200" size={30} />
         <span className="ml-2">{activeFilters.sort.label}</span>
         <span className="ml-1">{activeFilters.sort.desc ? "▼" : "▲"}</span>
       </PopoverButton>
 
-      <PopoverPanel className="absolute z-10 text-primary-600">
+      <PopoverPanel className="absolute z-10  text-primary-600">
         <div className="flex w-40 flex-col rounded-xl text-lg bg-primarydark-100">
           <header className="flex h-12 items-center justify-between border-b-2 px-4 border-b-primarydark-300">
             <span>Sort By:</span>
