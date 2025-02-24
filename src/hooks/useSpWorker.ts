@@ -15,7 +15,7 @@ export function useSpWorker() {
     useState<WorkerController | null>(null);
 
   useEffect(() => {
-    if (window && typeof window !== "undefined") {
+    if (window && typeof window !== "undefined" && !workerController) {
       void import("@/workers/hillcalculator.worker").then(() => {
         const worker = new Worker(
           new URL("@/workers/hillcalculator.worker", import.meta.url),
@@ -24,7 +24,7 @@ export function useSpWorker() {
         setWorkerController(controller);
       });
     }
-  }, []);
+  }, [workerController]);
 
   useEffect(() => {
     if (workerController) {
@@ -33,6 +33,7 @@ export function useSpWorker() {
       });
       workerController.on("best_menus_update", (result: CalculateSPResult) => {
         setResult(result);
+        setCalculationResults(result);
       });
 
       workerController.on("calculation_end", () => {
@@ -42,28 +43,30 @@ export function useSpWorker() {
 
     return () => {
       if (workerController) {
-        workerController.off("done", () => {
-          setIsCalculating(false);
-        });
-        workerController.off("best_menus_update", () => {
-          if (workerController?.bestMenus) {
-            setCalculationResults(workerController?.bestMenus);
-            setResult(workerController?.bestMenus);
-          }
-        });
-
-        workerController.off("done", () => {
-          setIsCalculating(false);
-        });
+        // Clean up the event listeners
+        workerController.stop();
       }
     };
-  }, [result, setCalculationResults, workerController]);
+  }, [workerController, setCalculationResults]);
 
   const startCalculation = useCallback(
     (calculationParameters: Partial<CalculateParameters> = {}) => {
-      if (!workerController || selectedFoods.length === 0) {
-        setError("WorkerController not initialized or no foods selected");
+      if (!workerController) {
+        setError("WorkerController not initialized, trying to initialize");
+        if (window && typeof window !== "undefined") {
+          void import("@/workers/hillcalculator.worker").then(() => {
+            const worker = new Worker(
+              new URL("@/workers/hillcalculator.worker", import.meta.url),
+            );
+            const controller = new WorkerController(worker);
+            setWorkerController(controller);
+          });
+        }
         return;
+      }
+
+      if (selectedFoods.length === 0) {
+        setError("No foods selected");
       }
 
       console.log("Starting calculation");

@@ -1,8 +1,8 @@
 import React from "react";
 
-import { useSpWorker } from "@/utils/useSpWorker";
 import { toast } from "sonner";
 import ResultRenderer from "@/components/ResultRenderer";
+import { useSpWorker } from "@/hooks/useSpWorker";
 
 const CalculateSection: React.FC = () => {
   const { isCalculating, startCalculation, selectedFoods, error, result } =
@@ -13,7 +13,7 @@ const CalculateSection: React.FC = () => {
   }
 
   return (
-    <div>
+    <>
       <button
         onClick={() => startCalculation()}
         disabled={selectedFoods.length === 0 || isCalculating}
@@ -28,8 +28,8 @@ const CalculateSection: React.FC = () => {
       >
         {isCalculating ? "Calculating..." : "Calculate"}
       </button>
-      {result && <ResultRenderer result={result} />}
-    </div>
+      {result && <ResultRenderer result={result} shopName="" />}
+    </>
   );
 };
 

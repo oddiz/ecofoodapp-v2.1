@@ -5,7 +5,6 @@ import { getServerFoodShops } from "@/utils/getServerFoodShops";
 import { sanitizeUrl } from "@/utils/sanitizeUrl";
 import { Button, Input } from "@headlessui/react";
 import { useState } from "react";
-import { FaTruckLoading } from "react-icons/fa";
 import { FaDeleteLeft } from "react-icons/fa6";
 import { toast } from "sonner";
 

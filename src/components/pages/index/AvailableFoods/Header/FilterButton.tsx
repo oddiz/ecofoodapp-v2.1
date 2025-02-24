@@ -92,7 +92,7 @@ function TypeFilterButton({ label }: { label: FoodType }) {
           } inline-block h-3 w-3 transform rounded-full bg-white transition`}
         />
       </Switch>
-      <div className="flex w-full justify-start pl-4 text-base">{label}</div>
+      <div className="flex w-full justify-start pl-4 text-sm ">{label}</div>
     </div>
   );
 }
@@ -132,7 +132,7 @@ function TierFilterButton({ label }: { label: FoodTier }) {
           } inline-block h-3 w-3 transform rounded-full bg-white transition`}
         />
       </Switch>
-      <div className="flex w-full justify-center">
+      <div className="flex w-full text-sm justify-center">
         {label.replace("-", " ")}
       </div>
     </div>

@@ -1,7 +1,7 @@
 import React from "react";
-import { useSpWorker } from "@/utils/useSpWorker";
 import type { FoodShop } from "@/types/shops";
 import ResultRenderer from "@/components/ResultRenderer";
+import { useSpWorker } from "@/hooks/useSpWorker";
 
 interface ShopCardProps {
   shop: FoodShop;
@@ -17,7 +17,7 @@ const ShopCard: React.FC<ShopCardProps> = ({ shop }) => {
   return (
     <div
       className={
-        (result ? "row-span-2 " : "") +
+        (result ? "row-span-1 " : "") +
         `flex flex-col w-full rounded-lg bg-primarydark-800 border border-primarydark-400/40 shadow-lg`
       }
     >
@@ -44,25 +44,29 @@ const ShopCard: React.FC<ShopCardProps> = ({ shop }) => {
         </button>
       </div>
 
-      {/* Items Section */}
-      <div className="p-3 border-b h-72 overflow-y-auto  overflow-x-hidden border-primarydark-400/40">
-        <h3 className="text-md font-semibold text-primary-200 mb-4">
-          Available Foods
-        </h3>
-        <div className="grid grid-cols-2 grid-rows-2 gap-2 ">
-          {shop.foodsForSale.map((food) => (
-            <div
-              key={food.id + shop.name}
-              className="flex text-xs justify-between items-center p-1 rounded-md bg-primarydark-700/50 border border-primarydark-400/20"
-            >
-              <span className="text-primary-300 ">{food.name}</span>
-              <span className="text-ecogreen-400">
-                ${shop.prices?.[food.name]?.toFixed(2) ?? "N/A"}
-              </span>
-            </div>
-          ))}
+      {/* Items / Calculate Section */}
+      {result ? (
+        <ResultRenderer result={result} shopName={shop.name} />
+      ) : (
+        <div className="p-3 border-b h-72 overflow-y-auto  overflow-x-hidden border-primarydark-400/40">
+          <h3 className="text-md font-semibold text-primary-200 mb-4">
+            Available Foods
+          </h3>
+          <div className="grid grid-cols-2 grid-rows-2 gap-2 ">
+            {shop.foodsForSale.map((food) => (
+              <div
+                key={food.id + shop.name}
+                className="flex text-xs justify-between items-center p-1 rounded-md bg-primarydark-700/50 border border-primarydark-400/20"
+              >
+                <span className="text-primary-300 ">{food.name}</span>
+                <span className="text-ecogreen-400">
+                  ${shop.prices?.[food.name]?.toFixed(2) ?? "N/A"}
+                </span>
+              </div>
+            ))}
+          </div>
         </div>
-      </div>
+      )}
 
       {/* Calculate Section */}
       {error && (
@@ -72,7 +76,6 @@ const ShopCard: React.FC<ShopCardProps> = ({ shop }) => {
       )}
 
       {/* Results Section */}
-      {result && <ResultRenderer result={result} />}
     </div>
   );
 };
