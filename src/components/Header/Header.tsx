@@ -1,18 +1,26 @@
 import { Search } from "./Search";
-import { FaServer } from "react-icons/fa6";
+import { FaServer, FaSpinner } from "react-icons/fa6";
 import { Popover, PopoverButton, PopoverPanel } from "@headlessui/react";
 import { useServerStore } from "@/store/useServerStore";
+import { ImSpinner, ImSpinner11 } from "react-icons/im";
+import { TbFidgetSpinner } from "react-icons/tb";
 
 export const Header = () => {
   const currentServer = useServerStore((state) => state.currentServer);
   const servers = useServerStore((state) => state.availableServers);
   const setCurrentServer = useServerStore((state) => state.setCurrentServer);
+  const serverLoading = useServerStore((state) => state.serverLoading);
   return (
     <header className="flex h-24 w-full flex-shrink-0 flex-row border-b-[1px] py-5 px-5 border-b-primarydark-500 bg-primarydark-650">
       <Search className="h-full flex-grow" />
       <div className="flex h-full flex-row items-center justify-end">
         <Popover>
           <PopoverButton className="h-full flex flex-row items-center justify-center text-primary-700 hover:text-primary-400">
+            {serverLoading && (
+              <div className="animate-spin origin-center duration-500 ">
+                <TbFidgetSpinner size={24} />
+              </div>
+            )}
             <div className="m-3">{currentServer.name}</div>
             <FaServer size={24} />
           </PopoverButton>

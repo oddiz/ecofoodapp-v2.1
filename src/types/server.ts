@@ -7,6 +7,7 @@ export interface EcoServer {
 }
 
 export interface ServerStoreState {
+  serverLoading: boolean;
   currentServer: EcoServer;
   availableServers: EcoServer[];
   currentServerFoods: Food[];
@@ -14,7 +15,7 @@ export interface ServerStoreState {
   serverFoods: Record<EcoServer["address"], Food[]>;
   serverShops: Record<EcoServer["address"], FoodShop[]>;
   getServerFoods: (server: EcoServer) => Food[];
-  setCurrentServer: (server: EcoServer) => void;
+  setCurrentServer: (server: EcoServer) => Promise<void>;
   addServer: (
     server: EcoServer,
     serverFoods: Food[],

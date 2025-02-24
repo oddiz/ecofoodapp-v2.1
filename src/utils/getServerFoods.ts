@@ -91,8 +91,6 @@ export function parseNutrients(inputText: string): Nutrients {
     }
   });
 
-  console.log(inputText, results);
-
   return results;
 }
 
