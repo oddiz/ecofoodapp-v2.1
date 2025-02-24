@@ -13,7 +13,7 @@ export const CalculateButton: React.FC = () => {
 
   return (
     <button
-      onClick={startCalculation}
+      onClick={() => startCalculation()}
       disabled={selectedFoods.length === 0 || isCalculating}
       className={`
         h-14 w-full flex-shrink-0 font-[Cubano] text-2xl ring-inset transition-all duration-100
