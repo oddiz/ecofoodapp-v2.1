@@ -8,7 +8,7 @@ export const Search = ({ className }: { className: string }) => {
   useEffect(() => {
     const onKeyDownHandler = (e: KeyboardEvent) => {
       //if ctrl+f is pressed
-      if (e.ctrlKey && e.key === "f" && searchRef?.current) {
+      if (e.ctrlKey && e.key === "k" && searchRef?.current) {
         e.preventDefault();
         searchRef.current.focus();
       }
@@ -39,7 +39,7 @@ export const Search = ({ className }: { className: string }) => {
           ) : (
             <div className="flex flex-row items-center justify-center text-primary-500 ">
               <kbd className={kbdStyle}>Ctrl</kbd> +{" "}
-              <kbd className={kbdStyle}>F</kbd>
+              <kbd className={kbdStyle}>K</kbd>
             </div>
           )}
         </div>

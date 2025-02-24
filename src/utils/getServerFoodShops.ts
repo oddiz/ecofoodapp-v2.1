@@ -1,13 +1,12 @@
 import type { Food } from "@/types/food";
 import type { EcoShop, FoodShop, ShopsAPI } from "@/types/shops";
+import { generateApiEndpoints } from "@/utils/generateApiEndpoints";
 
 export async function getServerFoodShops(
   serverIp: string,
   serverFoods: Food[],
 ) {
-  const response = await fetch(
-    `http://${serverIp}/api/v1/plugins/EcoPriceCalculator/stores`,
-  );
+  const response = await fetch(generateApiEndpoints(serverIp).stores);
   if (!response.ok) {
     throw new Error("Failed to fetch server foods");
   }
