@@ -55,6 +55,7 @@ export async function getServerFoods(serverIp: string): Promise<Food[]> {
 - <color=#FFD21AFF>Fat: <mspace=0.5em><pos=4.0em>  17.0</pos></mspace></color>
 - <color=#A7D20FFF>Vitamins: <mspace=0.5em><pos=4.0em>   2.0</pos></mspace></color>"
 
+"- <color=#F54F12FF>Carbs: <mspace=0.5em><pos=4.0em>   1,0</pos></mspace></color>\n- <color=#FFAE00FF>Protein: <mspace=0.5em><pos=4.0em>   4,0</pos></mspace></color>\n- <color=#FFD21AFF>Fat: <mspace=0.5em><pos=4.0em>   3,0</pos></mspace></color>"
  */
 // Define the shape of our parsed nutrients
 interface Nutrients {
@@ -67,7 +68,6 @@ interface Nutrients {
 export function parseNutrients(inputText: string): Nutrients {
   const results: Nutrients = {};
 
-  // Split into lines to handle each potential nutrient line individually
   const lines = inputText.split(/\r?\n/);
 
   lines.forEach((line) => {
@@ -77,8 +77,11 @@ export function parseNutrients(inputText: string): Nutrients {
       const nutrientName = (match[1]?.toLowerCase() as keyof Nutrients) ?? "";
       // match[2] is everything after "Carbs: " (or "Protein: ", etc.)
 
+      // Replace commas with periods
+      const normalizedText = match[2]?.replace(/,/g, ".") ?? "";
+
       // Extract *all* numbers from that piece of text
-      const allNumbers = match[2]?.match(/\d+(\.\d+)?/g) ?? 0;
+      const allNumbers = normalizedText.match(/\d+(\.\d+)?/g) ?? 0;
       if (allNumbers && allNumbers.length > 0) {
         // The last number should be the actual nutrient value (e.g. 15.0),
         // ignoring any earlier ones (like 0.5 in "mspace=0.5em").
@@ -87,6 +90,8 @@ export function parseNutrients(inputText: string): Nutrients {
       }
     }
   });
+
+  console.log(inputText, results);
 
   return results;
 }
