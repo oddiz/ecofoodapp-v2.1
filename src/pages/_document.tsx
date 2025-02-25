@@ -18,6 +18,10 @@ class MyDocument extends Document {
             rel="stylesheet"
           />
           <meta name="description" content="For all your food needs in Eco." />
+          <meta
+            name="google-adsense-account"
+            content="ca-pub-5536186665437668"
+          />
           <link rel="icon" href="/favicon.ico" />
         </Head>
         <body className="h-screen w-screen max-w-full">
