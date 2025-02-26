@@ -2,10 +2,10 @@ import React from "react";
 import { useFoodStore } from "@/store/useFoodStore";
 import { useFoodFilter } from "@/hooks/useFoodFilter";
 import { type Food } from "@/types/food";
-import SelectedFoodsSection from "@/components/pages/index/SelectedFoods";
-import FoodsHeader from "@/components/pages/index/AvailableFoods/Header";
-import FoodGrid from "@/components/pages/index/AvailableFoods/FoodGrid";
-import CalculateSection from "@/components/pages/index/CalculateSection";
+import FoodsHeader from "@/components/pages/Calculator/AvailableFoods/Header";
+import FoodGrid from "@/components/pages/Calculator/AvailableFoods/FoodGrid";
+import SelectedFoodsSection from "@/components/pages/Calculator/SelectedFoods";
+import CalculateSection from "@/components/pages/Calculator/CalculateSection";
 
 const CalculatorContent = () => {
   const {

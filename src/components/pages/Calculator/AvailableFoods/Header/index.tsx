@@ -1,5 +1,5 @@
-import { FilterButton } from "@/components/pages/index/AvailableFoods/Header/FilterButton";
-import { SortButton } from "@/components/pages/index/AvailableFoods/Header/SortButton";
+import { FilterButton } from "@/components/pages/Calculator/AvailableFoods/Header/FilterButton";
+import { SortButton } from "@/components/pages/Calculator/AvailableFoods/Header/SortButton";
 import React from "react";
 
 const FoodsHeader = React.memo(function FoodsHeader() {

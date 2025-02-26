@@ -1,4 +1,4 @@
-import PieChartFromFood from "@/components/pages/index/AvailableFoods/FoodCard/PieChart";
+import PieChartFromFood from "@/components/pages/Calculator/AvailableFoods/FoodCard/PieChart";
 import { Tooltip } from "@/components/Tooltip";
 import { type Food } from "@/types/food";
 import { FaWeightHanging, FaFire, FaNutritionix } from "react-icons/fa";

@@ -1,4 +1,4 @@
-import { FoodCard } from "@/components/pages/index/AvailableFoods/FoodCard";
+import { FoodCard } from "@/components/pages/Calculator/AvailableFoods/FoodCard";
 import type { Food } from "@/types/food";
 import React, { useMemo } from "react";
 

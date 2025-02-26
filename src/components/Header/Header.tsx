@@ -1,8 +1,7 @@
 import { Search } from "./Search";
-import { FaServer, FaSpinner } from "react-icons/fa6";
+import { FaServer } from "react-icons/fa6";
 import { Popover, PopoverButton, PopoverPanel } from "@headlessui/react";
 import { useServerStore } from "@/store/useServerStore";
-import { ImSpinner, ImSpinner11 } from "react-icons/im";
 import { TbFidgetSpinner } from "react-icons/tb";
 
 export const Header = () => {
