@@ -1,7 +1,8 @@
-import React from "react";
+import React, { useEffect } from "react";
 import type { FoodShop } from "@/types/shops";
 import ResultRenderer from "@/components/ResultRenderer";
 import { useSpWorker } from "@/hooks/useSpWorker";
+import { toast } from "sonner";
 
 interface ShopCardProps {
   shop: FoodShop;
@@ -13,6 +14,14 @@ const ShopCard: React.FC<ShopCardProps> = ({ shop }) => {
   function doShopCalculation() {
     startCalculation({ selectedFoods: shop.foodsForSale });
   }
+  useEffect(() => {
+    if (error) {
+      toast(error);
+    }
+    if (shop) {
+      startCalculation({ selectedFoods: shop.foodsForSale });
+    }
+  }, [error, shop, startCalculation]);
 
   return (
     <div
@@ -24,7 +33,7 @@ const ShopCard: React.FC<ShopCardProps> = ({ shop }) => {
       {/* Header Section */}
       <div className="flex h-20 w-full flex-none">
         <div className="flex flex-col flex-1 p-3  border-b border-primarydark-400/40 ">
-          <p className="text-xs font-bold text-primary-100  ">{shop.name}</p>
+          <p className="text-xs font-bold text-primary-100">{shop.name}</p>
           <p className="text-primary-400 text-xs mt-auto justify-self-end">
             {shop.owner}
           </p>

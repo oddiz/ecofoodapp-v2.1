@@ -54,12 +54,10 @@ export class WorkerController extends CustomEventEmitter {
     switch (data?.op) {
       case "best_menus_update":
         this.bestMenus = data.result;
-        console.log(`Best menus updated:`, this.bestMenus);
         this.emit("best_menus_update", this.bestMenus);
         break;
       case "calculation_end":
         this.state = "done";
-        console.log(`Calculation ended:`, this.bestMenus);
         this.emit("calculation_end", this.bestMenus);
         break;
       default:
@@ -95,8 +93,6 @@ export class WorkerController extends CustomEventEmitter {
     this.calculateParameters = calcParams;
     this.bestMenus = null;
     this.startTime = Date.now();
-    console.log("Starting calculation with parameters:", calcParams);
-    console.log("Worker:", this.worker);
     this.worker.postMessage({
       message: "start_worker",
       source: "calculator",

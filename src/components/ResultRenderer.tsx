@@ -37,9 +37,9 @@ const ResultRenderer = ({
     <div className="flex flex-col w-full h-full p-4 rounded-lg bg-primarydark-700/50 border border-primarydark-400/20">
       {/* Multipliers Section */}
       <div className="mb-6 grid grid-cols-3 gap-4">
-        <div className="p-3 rounded-md bg-primarydark-600/50 text-center">
+        <div className="p-3 rounded-md bg-primarydark-600/50 text-center flex flex-col">
           <p className="text-xs text-primary-400 mb-1">SP Value</p>
-          <p className="text-xl font-bold text-ecogreen-400">
+          <p className="text-xl font-bold text-ecogreen-400  mt-auto">
             {result.sp.toFixed(1)}
           </p>
         </div>

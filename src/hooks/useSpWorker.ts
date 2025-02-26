@@ -52,7 +52,6 @@ export function useSpWorker() {
   const startCalculation = useCallback(
     (calculationParameters: Partial<CalculateParameters> = {}) => {
       if (!workerController) {
-        setError("WorkerController not initialized, trying to initialize");
         if (window && typeof window !== "undefined") {
           void import("@/workers/hillcalculator.worker").then(() => {
             const worker = new Worker(
@@ -69,7 +68,6 @@ export function useSpWorker() {
         setError("No foods selected");
       }
 
-      console.log("Starting calculation");
       setIsCalculating(true);
 
       const defaultCalcParams: CalculateParameters = {
@@ -89,8 +87,6 @@ export function useSpWorker() {
           ),
         ),
       };
-
-      console.log("Starting calculation with params", calcParams);
 
       workerController.start(calcParams);
     },
