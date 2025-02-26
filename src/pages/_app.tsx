@@ -7,6 +7,8 @@ import { Header } from "@/components/Header/Header";
 import { NavProvider } from "@/hooks/useNavigator";
 import { Toaster } from "sonner";
 import { useEffect, useState } from "react";
+import { SpeedInsights } from "@vercel/speed-insights/next";
+import { Analytics } from "@vercel/analytics/react";
 
 function EcoFoodApp({ Component, pageProps }: AppProps) {
   const [isClient, setIsClient] = useState(false);
@@ -21,6 +23,8 @@ function EcoFoodApp({ Component, pageProps }: AppProps) {
   return (
     <NavProvider>
       <SearchProvider>
+        <SpeedInsights />
+        <Analytics />
         <Head>
           <title>Eco Food App</title>
         </Head>
