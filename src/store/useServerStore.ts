@@ -1,6 +1,6 @@
 import { allFoods } from "@/data/foodData";
 import type { Food } from "@/types/food";
-import type { EcoServer, ServerStoreState } from "@/types/server";
+import type { EcoServer } from "@/types/server";
 import type { FoodShop } from "@/types/shops";
 import { getServerFoods } from "@/utils/getServerFoods";
 import { getServerFoodShops } from "@/utils/getServerFoodShops";
@@ -20,6 +20,27 @@ const defaultServerFoods: Record<EcoServer["address"], Food[]> = {
 const defaultServerShops: Record<EcoServer["address"], FoodShop[]> = {
   [defaultServer.address]: [],
 };
+interface ServerStoreState {
+  serverLoading: boolean;
+  currentServer: EcoServer;
+  availableServers: EcoServer[];
+  currentServerFoods: Food[];
+  currentServerStores: FoodShop[];
+  serverFoods: Record<EcoServer["address"], Food[]>;
+  serverShops: Record<EcoServer["address"], FoodShop[]>;
+  serverTastePrefs: Record<EcoServer["address"], Record<string, number>>;
+
+  getServerTastePref: () => Record<string, number>;
+  getServerFoods: (server: EcoServer) => Food[];
+  setCurrentServer: (server: EcoServer) => Promise<void>;
+  setFoodTaste: (food: Food, value: number) => void;
+  addServer: (
+    server: EcoServer,
+    serverFoods: Food[],
+    serverShops: FoodShop[],
+  ) => void;
+  removeServer: (server: EcoServer) => void;
+}
 
 export const useServerStore = create<ServerStoreState>()(
   devtools(
@@ -32,6 +53,24 @@ export const useServerStore = create<ServerStoreState>()(
         currentServerStores: defaultServerShops[defaultServer.address]!,
         serverFoods: defaultServerFoods,
         serverShops: defaultServerShops,
+        serverTastePrefs: {},
+        getServerTastePref: () =>
+          get().serverTastePrefs[get().currentServer.address] ?? {},
+        setFoodTaste: (food: Food, value: number) => {
+          set((state) => {
+            const address = state.currentServer.address;
+            const currentPrefs = state.serverTastePrefs[address] ?? {};
+            return {
+              serverTastePrefs: {
+                ...state.serverTastePrefs,
+                [address]: {
+                  ...currentPrefs,
+                  [food.name]: value,
+                },
+              },
+            };
+          });
+        },
         getServerFoods: (server) =>
           get().serverFoods[server.address] ?? allFoods,
         setCurrentServer: async (server) => {

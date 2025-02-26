@@ -1,6 +1,7 @@
 import type { AllItemsAPI, Item } from "@/types/allitems";
 import type { Food } from "@/types/food";
 import { generateApiEndpoints } from "@/utils/generateApiEndpoints";
+import { isProperFood } from "@/utils/isProperFood";
 
 export async function getServerFoods(serverIp: string): Promise<Food[]> {
   const response = await fetch(generateApiEndpoints(serverIp).allItems);
@@ -9,10 +10,8 @@ export async function getServerFoods(serverIp: string): Promise<Food[]> {
   }
 
   const { AllItems } = (await response.json()) as AllItemsAPI;
-  const foodItems: Item[] = Object.values(AllItems).filter(
-    ({ PropertyInfos, Tags }) =>
-      Tags.includes("Food") &&
-      (PropertyInfos?.Nutrition?.Nutrients?.length ?? 0) > 0,
+  const foodItems: Item[] = Object.values(AllItems).filter((item) =>
+    isProperFood(item),
   );
   const foods: Food[] = foodItems.map(({ PropertyInfos }) => {
     const nutrients = parseNutrients(PropertyInfos.Nutrition!.Nutrients);
@@ -104,7 +103,7 @@ Tier 1: 11-15 Campfire Charred
 Tier 0: Raw Food tag
  */
 export function determineTier(totalNutrients: number): number {
-  if (totalNutrients >= 46 && totalNutrients <= 65) {
+  if (totalNutrients >= 46) {
     return 4;
   }
   if (totalNutrients >= 28 && totalNutrients <= 45) {
@@ -122,7 +121,7 @@ export function determineTier(totalNutrients: number): number {
 function determineType(tier: number) {
   switch (tier) {
     case 4:
-      return "Kitchen/Stove";
+      return "Kitchen/Stove++";
     case 3:
       return "Cast Iron Stove/Bakery";
     case 2:

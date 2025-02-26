@@ -4,10 +4,12 @@ import { useState, useEffect, useCallback } from "react";
 import { type CalculateSPResult, type CalculateParameters } from "@/types/food"; // Adjust the import path as needed
 import { WorkerController } from "@/modules/WorkerController";
 import { useFoodStore } from "@/store/useFoodStore";
+import { useServerStore } from "@/store/useServerStore";
 
 export function useSpWorker() {
   const [isCalculating, setIsCalculating] = useState(false);
   const { selectedFoods, setCalculationResults } = useFoodStore();
+  const { getServerTastePref } = useServerStore();
   const [result, setResult] = useState<CalculateSPResult | null>(null);
 
   const [error, setError] = useState<string | null>(null);
@@ -72,7 +74,6 @@ export function useSpWorker() {
 
       const defaultCalcParams: CalculateParameters = {
         selectedFoods,
-        stomachFoods: [], // Add stomach foods if needed
         taste: new Map(), // Add taste preferences if needed
         menuSize: 5, // Set an appropriate menu size
         calculateType: "default", // Set the appropriate calculate type
@@ -86,11 +87,13 @@ export function useSpWorker() {
             ([_, value]) => value !== undefined,
           ),
         ),
+        taste: new Map(Object.entries(getServerTastePref())),
       };
 
       workerController.start(calcParams);
+      console.log(calcParams);
     },
-    [workerController, selectedFoods],
+    [workerController, selectedFoods, getServerTastePref],
   );
   return {
     isCalculating,

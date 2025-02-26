@@ -3,7 +3,15 @@ import {
   type CalculateSPResult,
   type StartWorkerMessage,
 } from "@/types/food";
-
+const TASTE_MULTS = {
+  "-3": 0.7,
+  "-2": 0.8,
+  "-1": 0.9,
+  "0": 1,
+  "1": 1.1,
+  "2": 1.2,
+  "3": 1.3,
+};
 //calculation_time: 5256.2939453125 ms
 // sp:131.8
 const MAX_ITERATIONS = 20000;
@@ -11,31 +19,23 @@ const MAX_ITERATIONS = 20000;
 const EARLY_STOP_THRESHOLD = 3000;
 const EMPTY_RESULT: CalculateSPResult = {
   sp: -Infinity,
-  foods: { menu: [], stomach: [] },
+  foods: { menu: [] },
   multipliers: { balanced: 0, taste: 0 },
   totals: { cal: 0, carb: 0, pro: 0, vit: 0, fat: 0, price: 0 },
 };
 self.onmessage = (event: MessageEvent<StartWorkerMessage>) => {
-  const { selectedFoods, stomachFoods, taste, calculateType, menuSize } =
-    event.data;
+  const { selectedFoods, taste, calculateType, menuSize } = event.data;
   if (
     event.data.source === "calculator" &&
     event.data.message === "start_worker"
   ) {
     console.time("calculation_time");
-    findBestMenuUsingHillMethod(
-      selectedFoods,
-      stomachFoods,
-      taste,
-      calculateType,
-      menuSize,
-    );
+    findBestMenuUsingHillMethod(selectedFoods, taste, calculateType, menuSize);
   }
 };
 
 function findBestMenuUsingHillMethod(
   selectedFoods: Food[],
-  stomach: Food[],
   taste: Map<string, number>,
   calculateType: "default" | "random",
   menuSize: number,
@@ -58,7 +58,7 @@ function findBestMenuUsingHillMethod(
   // Pre-compute taste values for faster lookup
   const tasteLookup = new Map<string, number>();
   selectedFoods.forEach((food) => {
-    tasteLookup.set(food.id.toString(), taste.get(food.id.toString()) ?? 1);
+    tasteLookup.set(food.name.toString(), taste.get(food.name.toString()) ?? 0);
   });
 
   for (let i = 0; i < MAX_ITERATIONS; i++) {
@@ -67,11 +67,7 @@ function findBestMenuUsingHillMethod(
       break;
     }
     const currentMenu = generateRandomMenu(selectedFoods);
-    const currentResult = calculateSPOptimized(
-      currentMenu,
-      stomach,
-      tasteLookup,
-    );
+    const currentResult = calculateSPOptimized(currentMenu, tasteLookup);
 
     let improved = true;
     while (improved) {
@@ -83,26 +79,20 @@ function findBestMenuUsingHillMethod(
       if (currentMenu.length < 10) {
         selectedFoods.forEach((food) => {
           operations.push(() =>
-            tryAddFood(food, currentMenu, currentResult, stomach, tasteLookup),
+            tryAddFood(food, currentMenu, currentResult, tasteLookup),
           );
         });
       }
 
       if (currentMenu.length > 1) {
         operations.push(() =>
-          tryRemoveFood(currentMenu, currentResult, stomach, tasteLookup),
+          tryRemoveFood(currentMenu, currentResult, tasteLookup),
         );
       }
 
       for (const food of selectedFoods) {
         operations.push(() =>
-          tryReplaceFood(
-            food,
-            currentMenu,
-            currentResult,
-            stomach,
-            tasteLookup,
-          ),
+          tryReplaceFood(food, currentMenu, currentResult, tasteLookup),
         );
       }
 
@@ -136,12 +126,11 @@ function tryAddFood(
   food: Food,
   currentMenu: Food[],
   currentResult: CalculateSPResult,
-  stomach: Food[],
   tasteLookup: Map<string, number>,
 ): boolean {
   // Use direct array modification instead of creating new arrays
   currentMenu.push(food);
-  const newResult = calculateSPOptimized(currentMenu, stomach, tasteLookup);
+  const newResult = calculateSPOptimized(currentMenu, tasteLookup);
 
   if (newResult.sp > currentResult.sp) {
     // Keep the change and update the result
@@ -157,7 +146,6 @@ function tryAddFood(
 function tryRemoveFood(
   currentMenu: Food[],
   currentResult: CalculateSPResult,
-  stomach: Food[],
   tasteLookup: Map<string, number>,
 ): boolean {
   // Try removing the food that contributes least to the score
@@ -166,7 +154,7 @@ function tryRemoveFood(
 
   for (let j = 0; j < currentMenu.length; j++) {
     const removed = currentMenu.splice(j, 1)[0]!;
-    const newResult = calculateSPOptimized(currentMenu, stomach, tasteLookup);
+    const newResult = calculateSPOptimized(currentMenu, tasteLookup);
 
     if (newResult.sp > bestRemovalScore) {
       bestRemovalScore = newResult.sp;
@@ -182,7 +170,7 @@ function tryRemoveFood(
     currentMenu.splice(bestRemovalIndex, 1);
     Object.assign(
       currentResult,
-      calculateSPOptimized(currentMenu, stomach, tasteLookup),
+      calculateSPOptimized(currentMenu, tasteLookup),
     );
     return true;
   }
@@ -194,7 +182,6 @@ function tryReplaceFood(
   food: Food,
   currentMenu: Food[],
   currentResult: CalculateSPResult,
-  stomach: Food[],
   tasteLookup: Map<string, number>,
 ): boolean {
   // Early exit if the menu already contains this food (no need to replace with same)
@@ -208,7 +195,7 @@ function tryReplaceFood(
   for (let j = 0; j < currentMenu.length; j++) {
     const original = currentMenu[j];
     currentMenu[j] = food;
-    const newResult = calculateSPOptimized(currentMenu, stomach, tasteLookup);
+    const newResult = calculateSPOptimized(currentMenu, tasteLookup);
 
     if (newResult.sp > bestReplaceScore) {
       bestReplaceScore = newResult.sp;
@@ -223,7 +210,7 @@ function tryReplaceFood(
     currentMenu[bestReplaceIndex] = food;
     Object.assign(
       currentResult,
-      calculateSPOptimized(currentMenu, stomach, tasteLookup),
+      calculateSPOptimized(currentMenu, tasteLookup),
     );
     return true;
   }
@@ -248,7 +235,6 @@ function generateRandomMenu(
 }
 function calculateSPOptimized(
   menu: Food[],
-  stomach: Food[],
   tasteLookup: Map<string, number>,
 ): CalculateSPResult {
   // Fast-path for empty menu
@@ -279,7 +265,9 @@ function calculateSPOptimized(
     totalVitaminSum += calFactor * food.vit;
 
     // Avoid toString() in hot loop by using numeric ID if available
-    const tasteValue = tasteLookup.get(food.id.toString()) ?? 1;
+    const tasteLevel = tasteLookup.get(food.name.toString()) ?? 0;
+    const tasteValue: number =
+      TASTE_MULTS[tasteLevel.toString() as keyof typeof TASTE_MULTS] ?? 1;
     weightedTasteSum += calFactor * tasteValue;
   }
 
@@ -308,7 +296,7 @@ function calculateSPOptimized(
 
   return {
     sp,
-    foods: { menu, stomach },
+    foods: { menu },
     multipliers: { balanced: balancedFactor, taste: tasteMultiplier },
     totals: {
       cal: totalCalories,

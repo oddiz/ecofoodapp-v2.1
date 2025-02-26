@@ -10,6 +10,12 @@ export type Food = {
   cal: number;
   weight: number;
 };
+
+export type Taste = {
+  foodName: number;
+  value: number;
+};
+
 export type SortableProperty =
   | "cal"
   | "weight"
@@ -18,7 +24,7 @@ export type SortableProperty =
   | "pro"
   | "vit";
 export type FoodType =
-  | "Kitchen/Stove"
+  | "Kitchen/Stove++"
   | "Cast Iron Stove/Bakery"
   | "Campfire"
   | "Campfire Charred"
@@ -58,7 +64,6 @@ export type ITastePref = Record<string, number>;
 
 export type CalculateParameters = {
   selectedFoods: Food[];
-  stomachFoods: Food[];
   taste: Map<string, number>;
   menuSize: number;
   calculateType: "default" | "random";
@@ -71,7 +76,6 @@ export type CalculateSPResult = {
   sp: number;
   foods: {
     menu: Food[];
-    stomach: Food[];
   };
   multipliers: {
     balanced: number;
