@@ -18,7 +18,7 @@ export function FilterButton() {
     "Tier-0",
   ];
   const allTypeFilters: FoodType[] = [
-    "Kitchen/Stove",
+    "Kitchen/Stove++",
     "Cast Iron Stove/Bakery",
     "Campfire",
     "Campfire Charred",

@@ -49,7 +49,6 @@ export function processBestMenus(
     newBests.scholar = {
       foods: {
         menu: newResult.foods.menu,
-        stomach: newResult.foods.stomach,
       },
       result: newResult,
       index: prevBests.scholar.index,
@@ -75,7 +74,6 @@ export function processBestMenus(
     newBests.worker = {
       foods: {
         menu: newResult.foods.menu,
-        stomach: newResult.foods.stomach,
       },
       result: newResult,
       index: prevBests.worker.index,
@@ -101,7 +99,6 @@ export function processBestMenus(
     newBests.student = {
       foods: {
         menu: newResult.foods.menu,
-        stomach: newResult.foods.stomach,
       },
       result: newResult,
       index: prevBests.student.index,

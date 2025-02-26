@@ -100,7 +100,6 @@ export enum IBestMenuTypes {
 export type IBestMenu = {
   foods: {
     menu: Food[];
-    stomach: Food[];
   };
   result: CalculateSPResult;
   index: number;

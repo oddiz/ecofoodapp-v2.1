@@ -774,7 +774,7 @@ export const allFoods: Food[] = [
   {
     id: 31,
     name: "Tortilla",
-    type: "Kitchen/Stove",
+    type: "Kitchen/Stove++",
     tier: 4,
     carb: 20,
     pro: 10,
@@ -786,7 +786,7 @@ export const allFoods: Food[] = [
   {
     id: 32,
     name: "Sweet Salad",
-    type: "Kitchen/Stove",
+    type: "Kitchen/Stove++",
     tier: 4,
     carb: 18,
     pro: 9,
@@ -798,7 +798,7 @@ export const allFoods: Food[] = [
   {
     id: 33,
     name: "Crimson Salad",
-    type: "Kitchen/Stove",
+    type: "Kitchen/Stove++",
     tier: 4,
     carb: 15,
     pro: 7,
@@ -810,7 +810,7 @@ export const allFoods: Food[] = [
   {
     id: 34,
     name: "Boiled Rice",
-    type: "Kitchen/Stove",
+    type: "Kitchen/Stove++",
     tier: 2,
     carb: 13,
     pro: 2,
@@ -822,7 +822,7 @@ export const allFoods: Food[] = [
   {
     id: 35,
     name: "Wild Mix",
-    type: "Kitchen/Stove",
+    type: "Kitchen/Stove++",
     tier: 4,
     carb: 15,
     pro: 6,
@@ -834,7 +834,7 @@ export const allFoods: Food[] = [
   {
     id: 36,
     name: "Pineapple Friend Rice",
-    type: "Kitchen/Stove",
+    type: "Kitchen/Stove++",
     tier: 4,
     carb: 20,
     pro: 12,
@@ -846,7 +846,7 @@ export const allFoods: Food[] = [
   {
     id: 37,
     name: "Fish N Chips",
-    type: "Kitchen/Stove",
+    type: "Kitchen/Stove++",
     tier: 4,
     carb: 20,
     pro: 10,
@@ -858,7 +858,7 @@ export const allFoods: Food[] = [
   {
     id: 38,
     name: "Hosomaki",
-    type: "Kitchen/Stove",
+    type: "Kitchen/Stove++",
     tier: 4,
     carb: 25,
     pro: 23,
@@ -870,7 +870,7 @@ export const allFoods: Food[] = [
   {
     id: 39,
     name: "Kelpy Crab Roll",
-    type: "Kitchen/Stove",
+    type: "Kitchen/Stove++",
     tier: 4,
     carb: 22,
     pro: 13,
@@ -882,7 +882,7 @@ export const allFoods: Food[] = [
   {
     id: 310,
     name: "Millionaires Salad",
-    type: "Kitchen/Stove",
+    type: "Kitchen/Stove++",
     tier: 4,
     carb: 18,
     pro: 6,
@@ -894,7 +894,7 @@ export const allFoods: Food[] = [
   {
     id: 311,
     name: "Seeded Camas Roll",
-    type: "Kitchen/Stove",
+    type: "Kitchen/Stove++",
     tier: 4,
     carb: 20,
     pro: 2,
@@ -906,7 +906,7 @@ export const allFoods: Food[] = [
   {
     id: 312,
     name: "Spiky Roll",
-    type: "Kitchen/Stove",
+    type: "Kitchen/Stove++",
     tier: 4,
     carb: 20,
     pro: 17,
@@ -1122,7 +1122,7 @@ export const allFoods: Food[] = [
   {
     id: 51,
     name: "Corn Fritters",
-    type: "Kitchen/Stove",
+    type: "Kitchen/Stove++",
     tier: 4,
     carb: 13,
     pro: 4,
@@ -1134,7 +1134,7 @@ export const allFoods: Food[] = [
   {
     id: 52,
     name: "Seared Meat",
-    type: "Kitchen/Stove",
+    type: "Kitchen/Stove++",
     tier: 4,
     carb: 4,
     pro: 19,
@@ -1146,7 +1146,7 @@ export const allFoods: Food[] = [
   {
     id: 53,
     name: "Fried Hare Haunches",
-    type: "Kitchen/Stove",
+    type: "Kitchen/Stove++",
     tier: 4,
     carb: 6,
     pro: 15,
@@ -1158,7 +1158,7 @@ export const allFoods: Food[] = [
   {
     id: 54,
     name: "Elk Taco",
-    type: "Kitchen/Stove",
+    type: "Kitchen/Stove++",
     tier: 4,
     carb: 15,
     pro: 8,
@@ -1170,7 +1170,7 @@ export const allFoods: Food[] = [
   {
     id: 55,
     name: "Boiled Sausage",
-    type: "Kitchen/Stove",
+    type: "Kitchen/Stove++",
     tier: 4,
     carb: 0,
     pro: 27,
@@ -1182,7 +1182,7 @@ export const allFoods: Food[] = [
   {
     id: 56,
     name: "Bear S U P R E M E",
-    type: "Kitchen/Stove",
+    type: "Kitchen/Stove++",
     tier: 4,
     carb: 6,
     pro: 22,
@@ -1194,7 +1194,7 @@ export const allFoods: Food[] = [
   {
     id: 57,
     name: "Agouti Enchiladas",
-    type: "Kitchen/Stove",
+    type: "Kitchen/Stove++",
     tier: 4,
     carb: 20,
     pro: 8,
@@ -1206,7 +1206,7 @@ export const allFoods: Food[] = [
   {
     id: 58,
     name: "Banh Xeo",
-    type: "Kitchen/Stove",
+    type: "Kitchen/Stove++",
     tier: 4,
     carb: 26,
     pro: 17,
@@ -1218,7 +1218,7 @@ export const allFoods: Food[] = [
   {
     id: 59,
     name: "Bison Chow Fun",
-    type: "Kitchen/Stove",
+    type: "Kitchen/Stove++",
     tier: 4,
     carb: 32,
     pro: 7,
@@ -1230,7 +1230,7 @@ export const allFoods: Food[] = [
   {
     id: 510,
     name: "Poke Bowl",
-    type: "Kitchen/Stove",
+    type: "Kitchen/Stove++",
     tier: 4,
     carb: 24,
     pro: 10,
