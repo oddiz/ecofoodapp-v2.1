@@ -6,17 +6,30 @@ import { WorkerController } from "@/modules/WorkerController";
 import { useFoodStore } from "@/store/useFoodStore";
 import { useServerStore } from "@/store/useServerStore";
 
-export function useSpWorker() {
+export function useSpWorker({ shopName }: { shopName?: string } = {}) {
   const [isCalculating, setIsCalculating] = useState(false);
   const { selectedFoods, setCalculationResults } = useFoodStore();
-  const { getServerTastePref } = useServerStore();
-  const [result, setResult] = useState<CalculateSPResult | null>(null);
+  const { getServerTastePref, getShopResult, setServerCalculationResult } =
+    useServerStore();
+  const [result, setResult] = useState<
+    CalculateSPResult | "loading" | undefined
+  >("loading");
 
   const [error, setError] = useState<string | null>(null);
   const [workerController, setWorkerController] =
     useState<WorkerController | null>(null);
 
   useEffect(() => {
+    if (shopName) {
+      const shopResult = getShopResult(shopName);
+      if (shopResult) {
+        setResult(shopResult);
+
+        return;
+      } else {
+        setResult(shopResult);
+      }
+    }
     if (window && typeof window !== "undefined" && !workerController) {
       void import("@/workers/hillcalculator.worker").then(() => {
         const worker = new Worker(
@@ -26,7 +39,7 @@ export function useSpWorker() {
         setWorkerController(controller);
       });
     }
-  }, [workerController]);
+  }, [getShopResult, shopName, workerController]);
 
   useEffect(() => {
     if (workerController) {
@@ -35,7 +48,13 @@ export function useSpWorker() {
       });
       workerController.on("best_menus_update", (result: CalculateSPResult) => {
         setResult(result);
-        setCalculationResults(result);
+        if (shopName) {
+          setServerCalculationResult(shopName, result);
+        } else {
+          setCalculationResults(result);
+        }
+
+        // Update the server calculation results
       });
 
       workerController.on("calculation_end", () => {
@@ -49,7 +68,12 @@ export function useSpWorker() {
         workerController.stop();
       }
     };
-  }, [workerController, setCalculationResults]);
+  }, [
+    setCalculationResults,
+    setServerCalculationResult,
+    shopName,
+    workerController,
+  ]);
 
   const startCalculation = useCallback(
     (calculationParameters: Partial<CalculateParameters> = {}) => {
@@ -91,7 +115,6 @@ export function useSpWorker() {
       };
 
       workerController.start(calcParams);
-      console.log(calcParams);
     },
     [workerController, selectedFoods, getServerTastePref],
   );

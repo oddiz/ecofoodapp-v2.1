@@ -10,11 +10,13 @@ const ResultRenderer = ({
   result,
   shopName = "",
 }: {
-  result: CalculateSPResult;
+  result: CalculateSPResult | "loading";
   shopName: string;
 }) => {
   const { currentServerStores } = useServerStore();
-
+  if (result === "loading") {
+    return <></>;
+  }
   // Group identical foods
   const groupedFoods = result.foods.menu.reduce((acc: GroupedFood[], food) => {
     const existing = acc.find((item) => item.food.id === food.id);

@@ -1,5 +1,5 @@
 import { allFoods } from "@/data/foodData";
-import type { Food } from "@/types/food";
+import type { CalculateSPResult, Food } from "@/types/food";
 import type { EcoServer } from "@/types/server";
 import type { FoodShop } from "@/types/shops";
 import { getServerFoods } from "@/utils/getServerFoods";
@@ -29,7 +29,22 @@ interface ServerStoreState {
   serverFoods: Record<EcoServer["address"], Food[]>;
   serverShops: Record<EcoServer["address"], FoodShop[]>;
   serverTastePrefs: Record<EcoServer["address"], Record<string, number>>;
-
+  serverCalculationResults: Record<
+    EcoServer["address"],
+    Record<string, CalculateSPResult>
+  >;
+  serverBlacklists: Record<EcoServer["address"], string[]>;
+  lastRefreshList: Record<EcoServer["address"], number>;
+  getLastRefresh: () => number | undefined;
+  setLastRefresh: (time: number) => void;
+  getShopResult: (shopName: string) => CalculateSPResult | undefined;
+  setServerCalculationResult: (
+    shopName: string,
+    results: CalculateSPResult,
+  ) => void;
+  setServerBlacklist: (shopName: string) => void;
+  getServerBlacklist: () => string[];
+  resetServerBlacklist: () => void;
   getServerTastePref: () => Record<string, number>;
   getServerFoods: (server: EcoServer) => Food[];
   setCurrentServer: (server: EcoServer) => Promise<void>;
@@ -54,6 +69,63 @@ export const useServerStore = create<ServerStoreState>()(
         serverFoods: defaultServerFoods,
         serverShops: defaultServerShops,
         serverTastePrefs: {},
+        serverCalculationResults: {},
+        serverBlacklists: {},
+        lastRefreshList: {},
+
+        getLastRefresh: () =>
+          get().lastRefreshList[get().currentServer.address],
+        setLastRefresh: (time: number) => {
+          set((state) => ({
+            lastRefreshList: {
+              ...state.lastRefreshList,
+              [state.currentServer.address]: time,
+            },
+          }));
+        },
+        getShopResult: (shopName) =>
+          get().serverCalculationResults[get().currentServer.address]?.[
+            shopName
+          ],
+        setServerCalculationResult: (
+          shopName: string,
+          results: CalculateSPResult,
+        ) => {
+          set((state) => ({
+            serverCalculationResults: {
+              ...state.serverCalculationResults,
+              [state.currentServer.address]: {
+                ...state.serverCalculationResults[state.currentServer.address],
+                [shopName]: results,
+              },
+            },
+          }));
+        },
+        setServerBlacklist: (shopName: string) => {
+          set((state) => {
+            const address = state.currentServer.address;
+            const currentBlacklist = state.serverBlacklists[address] ?? [];
+            return {
+              serverBlacklists: {
+                ...state.serverBlacklists,
+                [address]: [...currentBlacklist, shopName],
+              },
+            };
+          });
+        },
+        getServerBlacklist: () =>
+          get().serverBlacklists[get().currentServer.address] ?? [],
+        resetServerBlacklist: () => {
+          set((state) => {
+            const address = state.currentServer.address;
+            return {
+              serverBlacklists: {
+                ...state.serverBlacklists,
+                [address]: [],
+              },
+            };
+          });
+        },
         getServerTastePref: () =>
           get().serverTastePrefs[get().currentServer.address] ?? {},
         setFoodTaste: (food: Food, value: number) => {
@@ -102,7 +174,15 @@ export const useServerStore = create<ServerStoreState>()(
                 ...state.serverShops,
                 [server.address]: serverShops,
               },
+              serverCalculationResults: {
+                ...state.serverCalculationResults,
+                [server.address]: {},
+              },
               serverLoading: false,
+              lastRefreshList: {
+                ...state.lastRefreshList,
+                [server.address]: Date.now(),
+              },
             }));
           } catch {
             toast("Failed to fetch server data");

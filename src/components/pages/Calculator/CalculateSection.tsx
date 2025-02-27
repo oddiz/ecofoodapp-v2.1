@@ -28,7 +28,9 @@ const CalculateSection: React.FC = () => {
       >
         {isCalculating ? "Calculating..." : "Calculate"}
       </button>
-      {result && <ResultRenderer result={result} shopName="" />}
+      {result && result !== "loading" && (
+        <ResultRenderer result={result} shopName="" />
+      )}
     </>
   );
 };

@@ -36,9 +36,6 @@ export class WorkerController extends CustomEventEmitter {
   private worker: Worker;
   bestMenus: CalculateSPResult | null = null;
   private calculateParameters: CalculateParameters | null = null;
-  private startTime: number | null = null;
-  private updateInterval = 1000; // Update interval in milliseconds
-  private updateTimer: number | null = null;
 
   state: "idle" | "calculating" | "done" = "idle";
 
@@ -65,24 +62,6 @@ export class WorkerController extends CustomEventEmitter {
     }
   }
 
-  private startPeriodicUpdates(): void {
-    this.updateTimer = window.setInterval(() => {
-      if (this.bestMenus) {
-        this.emit("progress_update", {
-          bestMenus: this.bestMenus,
-          elapsedTime: Date.now() - (this.startTime ?? Date.now()),
-        });
-      }
-    }, this.updateInterval);
-  }
-
-  private stopPeriodicUpdates(): void {
-    if (this.updateTimer !== null) {
-      window.clearInterval(this.updateTimer);
-      this.updateTimer = null;
-    }
-  }
-
   start(calcParams: CalculateParameters): void {
     if (this.state === "calculating") {
       console.warn("Calculation already in progress. Ignoring start request.");
@@ -92,7 +71,6 @@ export class WorkerController extends CustomEventEmitter {
     this.state = "calculating";
     this.calculateParameters = calcParams;
     this.bestMenus = null;
-    this.startTime = Date.now();
     this.worker.postMessage({
       message: "start_worker",
       source: "calculator",
@@ -104,7 +82,6 @@ export class WorkerController extends CustomEventEmitter {
 
   stop(): void {
     if (this.state !== "calculating") {
-      console.warn("No calculation in progress. Ignoring stop request.");
       return;
     }
 

@@ -1,10 +1,44 @@
 import ShopCard from "@/components/pages/shops/shopCard";
+import ShopHeader from "@/components/pages/shops/ShopHeader";
 import { useSearch } from "@/hooks/useSearch";
 import { useServerStore } from "@/store/useServerStore";
+import { useCallback } from "react";
+import { ImSpinner } from "react-icons/im";
 
 export default function ShopPage() {
-  const { currentServerStores } = useServerStore((state) => state);
   const { searchInput } = useSearch();
+  const {
+    currentServerStores,
+    getServerBlacklist,
+    setServerBlacklist,
+    resetServerBlacklist,
+    serverLoading,
+  } = useServerStore();
+
+  const handleResetBlacklists = useCallback(() => {
+    resetServerBlacklist();
+  }, [resetServerBlacklist]);
+
+  const handleBlacklistShop = useCallback(
+    (shopName: string) => {
+      setServerBlacklist(shopName);
+    },
+    [setServerBlacklist],
+  );
+
+  if (serverLoading) {
+    // make a big spinner
+    return (
+      <div className="flex items-center justify-center h-full">
+        <ImSpinner
+          size={54}
+          className="animate-spin h-24 w-24 
+          text-primary-500"
+        />
+      </div>
+    );
+  }
+
   if (currentServerStores.length === 0) {
     return (
       <div className="flex flex-1 flex-col items-center justify-center">
@@ -24,21 +58,33 @@ export default function ShopPage() {
       </div>
     );
   }
+  // Filter shops based on search and blacklist
+  const filteredShops = currentServerStores
+    .filter((shop) => !getServerBlacklist().includes(shop.name))
+    .filter(
+      (shop) =>
+        shop.name.toLowerCase().includes(searchInput.toLowerCase()) ||
+        shop.foodsForSale.some((food) =>
+          food.name.toLowerCase().includes(searchInput.toLowerCase()),
+        ) ||
+        shop.owner.toLowerCase().includes(searchInput.toLowerCase()),
+    );
 
+  // Sort shops if sortBySP is true (assuming shop has a calculatedSP property)
+  const sortedShops = filteredShops;
   return (
-    <div className="grid lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 grid-cols-1 gap-2 overflow-y-auto p-2">
-      {currentServerStores
-        .filter(
-          (shop) =>
-            shop.name.toLowerCase().includes(searchInput.toLowerCase()) ||
-            shop.foodsForSale.some((food) =>
-              food.name.toLowerCase().includes(searchInput.toLowerCase()),
-            ) ||
-            shop.owner.toLowerCase().includes(searchInput.toLowerCase()),
-        )
-        .map((shop) => (
-          <ShopCard key={shop.name} shop={shop} />
+    <div className="flex flex-col h-full">
+      <ShopHeader onResetBlacklists={handleResetBlacklists} />
+
+      <div className="grid lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 grid-cols-1 gap-2 overflow-y-auto p-2">
+        {sortedShops.map((shop) => (
+          <ShopCard
+            key={shop.name}
+            shop={shop}
+            onBlacklist={() => handleBlacklistShop(shop.name)}
+          />
         ))}
+      </div>
     </div>
   );
 }
