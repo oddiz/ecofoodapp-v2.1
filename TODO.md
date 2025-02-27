@@ -11,7 +11,7 @@
 ## Shop Page
 
 - add header to shops.
-  - refresh button
+  - refresh button and last refresh time
   - recalculate
   - reset blacklists
 - sort shops based on calculated SP

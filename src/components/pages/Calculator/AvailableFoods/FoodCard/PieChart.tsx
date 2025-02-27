@@ -68,7 +68,7 @@ const PieChartFromFood = ({
     const typedDatum = datum;
     return (
       <animated.g
-        transform={typedStyle.transform}
+        transform={typedStyle.transform as unknown as string}
         style={{ pointerEvents: "none" }}
       >
         <circle fill={typedStyle.textColor} cy={6} r={9} />
