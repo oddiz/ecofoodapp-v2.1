@@ -90,10 +90,6 @@ export function useSpWorker({ shopName }: { shopName?: string } = {}) {
         return;
       }
 
-      if (selectedFoods.length === 0) {
-        setError("No foods selected");
-      }
-
       setIsCalculating(true);
 
       const defaultCalcParams: CalculateParameters = {

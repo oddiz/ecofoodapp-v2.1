@@ -1,7 +1,6 @@
 import { useServerStore } from "@/store/useServerStore";
 import { Button } from "@headlessui/react";
 import { RefreshCw, RotateCcw } from "lucide-react";
-import { useRouter } from "next/router";
 
 type ShopHeaderProps = {
   onResetBlacklists: () => void;
