@@ -15,7 +15,6 @@ export function useSpWorker({ shopName }: { shopName?: string } = {}) {
     CalculateSPResult | "loading" | undefined
   >("loading");
 
-  const [error, setError] = useState<string | null>(null);
   const [workerController, setWorkerController] =
     useState<WorkerController | null>(null);
 
@@ -119,6 +118,5 @@ export function useSpWorker({ shopName }: { shopName?: string } = {}) {
     startCalculation,
     result,
     selectedFoods,
-    error,
   };
 }

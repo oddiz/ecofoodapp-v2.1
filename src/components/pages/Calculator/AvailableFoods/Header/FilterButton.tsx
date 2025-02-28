@@ -10,6 +10,7 @@ import { type FoodTier, type FoodType } from "@/types/food";
 import { useFoodStore } from "@/store/useFoodStore";
 
 export function FilterButton() {
+  const { activeFilters } = useFoodStore();
   const allTierFilters: FoodTier[] = [
     "Tier-4",
     "Tier-3",
@@ -26,10 +27,20 @@ export function FilterButton() {
     "Unknown",
   ];
 
+  const isFilterActive =
+    activeFilters.tier.length > 0 || activeFilters.type.length > 0;
+
   return (
     <Popover>
       <PopoverButton className="flex items-center justify-center">
-        <FaFilter className="hover:fill-primary-800 " size={23} />
+        <FaFilter
+          className={
+            isFilterActive
+              ? `fill-ecoyellow-500 hover:fill-ecoyellow-400`
+              : `fill-primary-800 hover:fill-primary-400`
+          }
+          size={23}
+        />
       </PopoverButton>
 
       <PopoverPanel className="text-primary-600 absolute z-50">

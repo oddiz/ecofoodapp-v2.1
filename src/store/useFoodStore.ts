@@ -20,7 +20,7 @@ interface StoreState {
 }
 
 const defaultFilters: FilterState = {
-  tier: ["Tier-4"],
+  tier: [],
   type: [],
   sort: { id: "total_nutrients", label: "Total Nutrients", desc: true },
   maxBudget: 0,

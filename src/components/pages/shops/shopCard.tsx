@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import type { FoodShop } from "@/types/shops";
 import ResultRenderer from "@/components/ResultRenderer";
 import { useSpWorker } from "@/hooks/useSpWorker";
-import { toast } from "sonner";
 import { ShopNameColorParser } from "@/components/ShopName";
 import { Ban, Eye, EyeOff } from "lucide-react";
 
@@ -12,19 +11,16 @@ interface ShopCardProps {
 }
 
 const ShopCard: React.FC<ShopCardProps> = ({ shop, onBlacklist }) => {
-  const { startCalculation, error, result } = useSpWorker({
+  const { startCalculation, result } = useSpWorker({
     shopName: shop.name,
   });
   const [showCalcResult, setShowCalcResult] = useState<boolean>(true);
 
   useEffect(() => {
-    if (error) {
-      toast(error);
-    }
     if (shop && !result) {
       startCalculation({ selectedFoods: shop.foodsForSale });
     }
-  }, [error, result, shop, startCalculation]);
+  }, [result, shop, startCalculation]);
 
   return (
     <div
@@ -91,13 +87,6 @@ const ShopCard: React.FC<ShopCardProps> = ({ shop, onBlacklist }) => {
               </div>
             ))}
           </div>
-        </div>
-      )}
-
-      {/* Calculate Section */}
-      {error && (
-        <div className="mt-4 p-3 rounded-md bg-red-500/20 border border-red-500/40 text-red-400">
-          {error}
         </div>
       )}
     </div>

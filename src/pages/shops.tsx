@@ -27,7 +27,6 @@ export default function ShopPage() {
   );
 
   if (serverLoading) {
-    // make a big spinner
     return (
       <div className="flex items-center justify-center h-full">
         <ImSpinner
