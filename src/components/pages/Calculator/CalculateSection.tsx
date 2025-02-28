@@ -1,16 +1,11 @@
 import React from "react";
 
-import { toast } from "sonner";
 import ResultRenderer from "@/components/ResultRenderer";
 import { useSpWorker } from "@/hooks/useSpWorker";
 
 const CalculateSection: React.FC = () => {
-  const { isCalculating, startCalculation, selectedFoods, error, result } =
+  const { isCalculating, startCalculation, selectedFoods, result } =
     useSpWorker();
-
-  if (error) {
-    toast(error);
-  }
 
   return (
     <>
