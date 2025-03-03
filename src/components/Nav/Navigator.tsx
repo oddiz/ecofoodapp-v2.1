@@ -26,6 +26,12 @@ export const Navigator: React.FC = () => {
       link: "/taste",
     },
     {
+      id: "shopping-list",
+      label: "Shopping List",
+      icon: <IoStorefrontSharp size={24} />,
+      link: "/shopping-list",
+    },
+    {
       id: "settings",
       label: "Settings",
       icon: <IoSettingsSharp size={24} />,

@@ -6,6 +6,7 @@ import {
   type Food,
 } from "@/types/food"; // Adjust import path as needed
 import { useServerStore } from "@/store/useServerStore";
+import { immer } from "zustand/middleware/immer";
 
 interface StoreState {
   selectedFoods: Food[];
@@ -15,6 +16,7 @@ interface StoreState {
   addSelectedFood: (food: Food) => void;
   removeSelectedFood: (food: Food) => void;
   getAllFoods: () => Food[];
+  getFoodQuantity: (foodName: string) => number;
   setActiveFilters: (filters: FilterState) => void;
   setCalculationResults: (results: CalculateSPResult | null) => void;
 }
@@ -30,25 +32,56 @@ const defaultFilters: FilterState = {
 export const useFoodStore = create<StoreState>()(
   devtools(
     persist(
-      (set) => ({
+      immer((set) => ({
         selectedFoods: [],
         activeFilters: defaultFilters,
         calculationResults: null,
-        setSelectedFoods: (foods) => set({ selectedFoods: foods }),
+        getFoodQuantity: (foodName) => {
+          const serverStores = useServerStore.getState().currentServerStores;
+
+          const foodQuantity = serverStores.reduce((acc, store) => {
+            const foodAmt = store.quantities[foodName];
+            if (foodAmt) {
+              return acc + foodAmt;
+            }
+            return acc;
+          }, 0);
+
+          return foodQuantity;
+        },
+
+        setSelectedFoods: (foods) =>
+          set((state) => {
+            state.selectedFoods = foods;
+          }),
+
         getAllFoods: () => {
           const serverState = useServerStore.getState();
           return serverState.getServerFoods(serverState.currentServer);
         },
+
         addSelectedFood: (food) =>
-          set((state) => ({ selectedFoods: [...state.selectedFoods, food] })),
+          set((state) => {
+            state.selectedFoods.push(food);
+          }),
+
         removeSelectedFood: (food) =>
-          set((state) => ({
-            selectedFoods: state.selectedFoods.filter((f) => f.id !== food.id),
-          })),
-        setActiveFilters: (filters) => set({ activeFilters: filters }),
+          set((state) => {
+            state.selectedFoods = state.selectedFoods.filter(
+              (f) => f.id !== food.id,
+            );
+          }),
+
+        setActiveFilters: (filters) =>
+          set((state) => {
+            state.activeFilters = filters;
+          }),
+
         setCalculationResults: (results) =>
-          set({ calculationResults: results }),
-      }),
+          set((state) => {
+            state.calculationResults = results;
+          }),
+      })),
       {
         name: "food-store",
         storage: createJSONStorage(() => localStorage),
