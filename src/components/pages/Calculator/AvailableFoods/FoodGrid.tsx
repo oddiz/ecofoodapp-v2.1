@@ -2,7 +2,7 @@ import { FoodCard } from "@/components/pages/Calculator/AvailableFoods/FoodCard"
 import type { Food } from "@/types/food";
 import React, { useMemo } from "react";
 
-const FoodGrid = React.memo(function FoodGrid({
+const FoodGrid = ({
   foods,
   onFoodClicked,
   selectedFoods,
@@ -10,7 +10,7 @@ const FoodGrid = React.memo(function FoodGrid({
   foods: Food[];
   onFoodClicked: (food: Food) => void;
   selectedFoods: Food[];
-}) {
+}) => {
   const MAX_FOODS = 24;
   const [renderUntil, setRenderUntil] = React.useState<number>(MAX_FOODS);
 
@@ -55,6 +55,6 @@ const FoodGrid = React.memo(function FoodGrid({
       {loadMoreButton}
     </div>
   );
-});
+};
 
 export default FoodGrid;
