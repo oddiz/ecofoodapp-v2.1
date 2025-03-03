@@ -5,7 +5,7 @@ import axios from "axios";
 
 const ALLOWED_PATHS = [
   "api/v1/plugins/EcoPriceCalculator/stores",
-  "Layers/TerrainLatest.gif",
+  "Layers/WorldPreview.gif",
   "api/v1/map/map.json",
   "api/v1/plugins/EcoPriceCalculator/allItems",
 ];
