@@ -17,7 +17,6 @@ function EcoFoodApp({ Component, pageProps }: AppProps) {
         <Analytics />
         <Head>
           <title>Eco Food App</title>
-          <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
         </Head>
         <main className="bg-primarydark-600 caret-transparent cursor-default flex h-screen flex-1 flex-row overflow-y-hidden">
           <Navigator />
