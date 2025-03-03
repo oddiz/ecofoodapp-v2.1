@@ -32,9 +32,7 @@ const nextConfig = {
     "d3-time",
     "d3-time-format",
   ],
-  experimental: {
-    esmExternals: "loose",
-  },
+  
 };
 
 export default nextConfig;

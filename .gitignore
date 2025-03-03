@@ -4,6 +4,9 @@
 /node_modules
 /.pnp
 .pnp.js
+.yarn
+yarn.lock
+.yarnrc.yml
 
 src/data/*.json
 # testing
