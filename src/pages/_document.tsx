@@ -1,6 +1,7 @@
 // pages/_document.js
 
 import Document, { Html, Head, Main, NextScript } from "next/document";
+import Script from "next/script";
 
 class MyDocument extends Document {
   render() {
@@ -23,12 +24,12 @@ class MyDocument extends Document {
             content="ca-pub-5536186665437668"
           />
           <link rel="icon" href="/favicon.ico" />
-          <script
+          <Script
             async
             src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5536186665437668"
             crossOrigin="anonymous"
-          ></script>
-          <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+          ></Script>
+          <Script>(adsbygoogle = window.adsbygoogle || []).push({});</Script>
         </Head>
         <body className="h-screen w-screen max-w-full">
           <Main />
