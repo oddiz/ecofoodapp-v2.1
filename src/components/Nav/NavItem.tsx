@@ -1,3 +1,5 @@
+import type { JSX } from "react";
+
 export const NavItem = ({
   icon,
   active,

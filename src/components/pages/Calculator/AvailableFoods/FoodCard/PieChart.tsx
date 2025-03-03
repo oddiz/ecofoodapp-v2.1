@@ -5,7 +5,7 @@ import {
   type MayHaveLabel,
   type PieCustomLayer,
 } from "@nivo/pie";
-import { animated } from "react-spring";
+import { animated } from "@react-spring/web";
 interface PieChartData {
   id: string | number;
   value: number;
@@ -66,8 +66,12 @@ const PieChartFromFood = ({
   > = ({ datum, label, style }) => {
     const typedStyle = style;
     const typedDatum = datum;
+    if (!typedStyle) {
+      return null;
+    }
+    const AnimatedG = animated("g");
     return (
-      <animated.g
+      <AnimatedG
         transform={typedStyle.transform as unknown as string}
         style={{ pointerEvents: "none" }}
       >
@@ -89,7 +93,7 @@ const PieChartFromFood = ({
         >
           {label}
         </text>
-      </animated.g>
+      </AnimatedG>
     );
   };
 

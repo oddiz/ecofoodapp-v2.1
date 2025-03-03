@@ -22,17 +22,6 @@ const nextConfig = {
    */
 
   // Add experimental features to support top-level await
-  transpilePackages: [
-    "@nivo/pie",
-    "d3-scale",
-    "d3-scale-chromatic",
-    "d3-color",
-    "d3-interpolate",
-    "d3-format",
-    "d3-time",
-    "d3-time-format",
-  ],
-  
 };
 
 export default nextConfig;
