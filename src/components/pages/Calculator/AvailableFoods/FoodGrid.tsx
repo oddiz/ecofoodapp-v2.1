@@ -1,4 +1,5 @@
 import { FoodCard } from "@/components/pages/Calculator/AvailableFoods/FoodCard";
+import { useSearch } from "@/hooks/useSearch";
 import type { Food } from "@/types/food";
 import React, { useMemo } from "react";
 
@@ -13,6 +14,7 @@ const FoodGrid = React.memo(function FoodGrid({
 }) {
   const MAX_FOODS = 24;
   const [renderUntil, setRenderUntil] = React.useState<number>(MAX_FOODS);
+  const { searchInput } = useSearch();
 
   const renderFoods = () => {
     const foodsToRender = foods.slice(0, renderUntil);

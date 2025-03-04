@@ -1,8 +1,11 @@
-import dynamic from 'next/dynamic'
+import dynamic from "next/dynamic";
 
-const PieChart = dynamic(() => import('@nivo/pie').then(mod => mod.ResponsivePie), { 
-  ssr: false,
-  loading: () => <div>Loading chart...</div>
-})
+const PieChart = dynamic(
+  () => import("@nivo/pie").then((mod) => mod.ResponsivePie),
+  {
+    ssr: false,
+    loading: () => <div></div>,
+  },
+);
 
-export default PieChart
+export default PieChart;

@@ -153,7 +153,7 @@ const AddServerComponent = () => {
           ) : (
             <div className="overflow-x-auto">
               <Table>
-                <TableHeader className="bg-primarydark-600">
+                <TableHeader className="bg-primarydark-800">
                   <TableRow>
                     <TableHead className="text-primary-300">Server</TableHead>
                     <TableHead className="text-primary-300">Address</TableHead>
