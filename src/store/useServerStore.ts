@@ -1,9 +1,10 @@
 import { allFoods } from "@/data/foodData";
+import { useFoodStore } from "@/store/useFoodStore";
 import type { CalculateSPResult, Food } from "@/types/food";
 import type { EcoServer } from "@/types/server";
 import type { FoodShop } from "@/types/shops";
-import { getServerFoods } from "@/utils/getServerFoods";
-import { getServerFoodShops } from "@/utils/getServerFoodShops";
+import { getFoodsFromAPI } from "@/utils/getServerFoods";
+import { getFoodShopsFromAPI } from "@/utils/getServerFoodShops";
 import { parseStoreCoordinates } from "@/utils/parseStoreCoordinates";
 import { sanitizeUrl } from "@/utils/sanitizeUrl";
 import { toast } from "sonner";
@@ -25,7 +26,6 @@ interface ServerStoreState {
   serverLoading: boolean;
   currentServer: EcoServer;
   availableServers: EcoServer[];
-  currentServerFoods: Food[];
   currentServerStores: FoodShop[];
   serverFoods: Record<EcoServer["address"], Food[]>;
   serverShops: Record<EcoServer["address"], FoodShop[]>;
@@ -51,7 +51,7 @@ interface ServerStoreState {
   getServerBlacklist: () => string[];
   resetServerBlacklist: () => void;
   getServerTastePref: () => Record<string, number>;
-  getServerFoods: (server: EcoServer) => Food[];
+  getCurrentFoods: () => Food[];
   setCurrentServer: (server: EcoServer) => Promise<void>;
   setFoodTaste: (food: Food, value: number) => void;
   addServer: (
@@ -69,7 +69,6 @@ export const useServerStore = create<ServerStoreState>()(
         serverLoading: false,
         currentServer: defaultServer,
         availableServers: [defaultServer],
-        currentServerFoods: defaultServerFoods[defaultServer.address]!,
         currentServerStores: defaultServerShops[defaultServer.address]!,
         serverFoods: defaultServerFoods,
         serverShops: defaultServerShops,
@@ -137,24 +136,25 @@ export const useServerStore = create<ServerStoreState>()(
             state.serverTastePrefs[address][food.name] = value;
           });
         },
-        getServerFoods: (server) =>
-          get().serverFoods[server.address] ?? allFoods,
+        getCurrentFoods: () => {
+          const currentServerAddress = get().currentServer.address;
+          return get().serverFoods[currentServerAddress] ?? allFoods;
+        },
         setCurrentServer: async (server) => {
           try {
             if (defaultServer.address === server.address) {
               return set((state) => {
                 state.currentServer = server;
-                state.currentServerFoods = allFoods;
                 state.currentServerStores = [];
               });
             }
             set((state) => {
               state.serverLoading = true;
             });
-            const serverFoods = await getServerFoods(
+            const serverFoods = await getFoodsFromAPI(
               sanitizeUrl(server.address),
             );
-            const serverShops = await getServerFoodShops(
+            const serverShops = await getFoodShopsFromAPI(
               sanitizeUrl(server.address),
               serverFoods,
             );
@@ -169,9 +169,11 @@ export const useServerStore = create<ServerStoreState>()(
               storeCoordinates[shop.name] = shop.coordinates!;
             });
 
+            // clear selectedFoods
+            useFoodStore.getState().setSelectedFoods([]);
+
             set((state) => {
               state.currentServer = server;
-              state.currentServerFoods = serverFoods ?? [];
               state.currentServerStores = serverShops ?? [];
               state.serverFoods[server.address] = serverFoods;
               state.serverShops[server.address] = serverShops;
@@ -190,7 +192,6 @@ export const useServerStore = create<ServerStoreState>()(
             set((state) => {
               state.serverLoading = false;
             });
-            return;
           }
         },
         addServer: (server, serverFoods, serverShops) => {
@@ -206,7 +207,7 @@ export const useServerStore = create<ServerStoreState>()(
         removeServer: (server) => {
           set((state) => {
             state.availableServers = state.availableServers.filter(
-              (s) => s !== server,
+              (s) => s.address !== server.address,
             );
           });
         },

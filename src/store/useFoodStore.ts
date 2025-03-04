@@ -57,7 +57,7 @@ export const useFoodStore = create<StoreState>()(
 
         getAllFoods: () => {
           const serverState = useServerStore.getState();
-          return serverState.getServerFoods(serverState.currentServer);
+          return serverState.getCurrentFoods();
         },
 
         addSelectedFood: (food) =>

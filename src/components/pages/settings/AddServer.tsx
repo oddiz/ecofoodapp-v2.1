@@ -1,7 +1,7 @@
 import { useServerStore } from "@/store/useServerStore";
 import type { EcoServer } from "@/types/server";
-import { getServerFoods } from "@/utils/getServerFoods";
-import { getServerFoodShops } from "@/utils/getServerFoodShops";
+import { getFoodsFromAPI } from "@/utils/getServerFoods";
+import { getFoodShopsFromAPI } from "@/utils/getServerFoodShops";
 import { sanitizeUrl } from "@/utils/sanitizeUrl";
 import { Button, Input } from "@headlessui/react";
 import { useState } from "react";
@@ -58,8 +58,8 @@ const AddServerComponent = () => {
         name: newServerName,
         address: sanitizeUrl(newServerIP),
       };
-      const serverFoods = await getServerFoods(sanitizeUrl(newServerIP));
-      const serverShops = await getServerFoodShops(
+      const serverFoods = await getFoodsFromAPI(sanitizeUrl(newServerIP));
+      const serverShops = await getFoodShopsFromAPI(
         sanitizeUrl(newServerIP),
         serverFoods,
       );

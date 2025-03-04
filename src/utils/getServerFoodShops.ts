@@ -2,7 +2,7 @@ import type { Food } from "@/types/food";
 import type { EcoShop, FoodShop, ShopsAPI } from "@/types/shops";
 import { generateApiEndpoints } from "@/utils/generateApiEndpoints";
 
-export async function getServerFoodShops(
+export async function getFoodShopsFromAPI(
   serverIp: string,
   serverFoods: Food[],
 ) {
