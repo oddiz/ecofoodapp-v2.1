@@ -1,6 +1,11 @@
 import { TbMeat } from "react-icons/tb";
 import { NavItem } from "./NavItem";
-import { IoStorefrontSharp, IoHeart, IoSettingsSharp } from "react-icons/io5";
+import {
+  IoStorefrontSharp,
+  IoHeart,
+  IoSettingsSharp,
+  IoCart,
+} from "react-icons/io5";
 import Image from "next/image";
 import { useNavigator } from "@/hooks/useNavigator";
 import Link from "next/link";
@@ -27,9 +32,9 @@ export const Navigator: React.FC = () => {
     },
     {
       id: "shopping-list",
-      label: "Shopping List",
-      icon: <IoStorefrontSharp size={24} />,
-      link: "/shopping-list",
+      label: "Cart",
+      icon: <IoCart size={24} />,
+      link: "/cart",
     },
     {
       id: "settings",

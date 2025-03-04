@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Store } from "lucide-react";
-import type { BestDeal } from "@/pages/shopping-list";
+import type { BestDeal } from "@/pages/cart";
 
 interface MapDimensions {
   naturalWidth: number;
@@ -16,7 +16,6 @@ interface ShopMarkerProps {
 
 const ShopMarker: React.FC<ShopMarkerProps> = ({ deal, mapDimensions }) => {
   const [showTooltip, setShowTooltip] = useState(false);
-  console.log(deal);
   if (deal.shop?.coordinates === undefined) return null;
   // Calculate position based on coordinates and map dimensions
   const positionX =

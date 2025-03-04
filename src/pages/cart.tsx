@@ -16,6 +16,7 @@ import { useShoppingStore } from "@/store/useShoppingStore";
 import type { Food } from "@/types/food";
 import { Trash2, ShoppingCart, Plus, Minus } from "lucide-react";
 import ShoppingMap from "@/components/pages/shopping/ShoppingMap";
+import { ShopNameColorParser } from "@/components/ShopName";
 
 export interface BestDeal {
   item: string;
@@ -44,15 +45,15 @@ export default function ShoppingPage() {
   } = useShoppingStore();
 
   // Server store
-  const { currentServerFoods } = useServerStore();
+  const { getCurrentFoods } = useServerStore();
 
   // Filter foods based on search term
   useEffect(() => {
-    const filtered = currentServerFoods.filter((food) =>
+    const filtered = getCurrentFoods().filter((food) =>
       food.name.toLowerCase().includes(searchTerm.toLowerCase()),
     );
     setFilteredItems(filtered);
-  }, [searchTerm, currentServerFoods]);
+  }, [searchTerm, getCurrentFoods]);
 
   // Calculate best deals based on shopping list
   const bestDeals = useMemo(() => {
@@ -71,7 +72,7 @@ export default function ShoppingPage() {
   }, [shoppingList]);
 
   return (
-    <div className="flex flex-col h-full bg-primarydark-800 text-primary-200 p-4 space-y-6">
+    <div className="flex flex-col h-full bg-primarydark-800 text-primary-200 p-4 space-y-6 overflow-y-auto">
       <div className="flex justify-between items-center">
         <h1 className="text-3xl font-bold text-primary-100">Shopping List</h1>
         <div className="flex gap-2">
@@ -99,7 +100,7 @@ export default function ShoppingPage() {
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 placeholder="Search for food items"
-                className="flex-grow bg-primarydark-600 border-primarydark-400"
+                className="flex-grow bg-primarydark-600 border-primarydark-400 caret-primary-400"
               />
               <Input
                 type="number"
@@ -251,7 +252,11 @@ export default function ShoppingPage() {
                                   variant="outline"
                                   className="bg-primarydark-600 border-primarydark-400"
                                 >
-                                  {deal.shop?.shopName}
+                                  {deal.shop?.shopName && (
+                                    <ShopNameColorParser
+                                      name={deal.shop.shopName}
+                                    />
+                                  )}
                                 </Badge>
                                 <span className="text-xs text-primary-400">
                                   {deal.quantity} @ ${deal.price.toFixed(2)}

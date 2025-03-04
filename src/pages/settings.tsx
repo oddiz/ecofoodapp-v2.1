@@ -3,7 +3,7 @@ import type { NextPage } from "next";
 
 const Settings: NextPage = () => {
   return (
-    <div className="caret-slate-100 flex flex-col justify-center min-w-[600px] max-w-[800px] mx-auto">
+    <div className="caret-slate-100 flex flex-col justify-center min-w-[800px] max-w-[1000px] mx-auto">
       <AddServerComponent />
     </div>
   );

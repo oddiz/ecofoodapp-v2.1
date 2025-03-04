@@ -3,7 +3,7 @@ import React, { useState, useRef, useEffect } from "react";
 import ShopMarker from "@/components/pages/shopping/ShopMarker";
 import { generateApiEndpoints } from "@/utils/generateApiEndpoints";
 import { useServerStore } from "@/store/useServerStore";
-import type { BestDeal } from "@/pages/shopping-list";
+import type { BestDeal } from "@/pages/cart";
 
 interface ShoppingMapProps {
   bestDeals: BestDeal[];
