@@ -1,4 +1,3 @@
-import React from "react";
 import { useFoodStore } from "@/store/useFoodStore";
 import { useFoodFilter } from "@/hooks/useFoodFilter";
 import { type Food } from "@/types/food";
@@ -26,10 +25,12 @@ const CalculatorContent = () => {
   };
 
   return (
-    <div className="flex h-full flex-1 flex-row overflow-y-auto">
+    <div className="flex flex-col lg:flex-row h-full w-full overflow-hidden">
+      {/* Foods Grid Section - Full width on mobile, 2/3 on desktop */}
       <div
         id="foods_section"
-        className="border-r-primarydark-200/40 flex h-full w-2/3 min-w-[140px] flex-col border-r-2  "
+        className="flex flex-col border-b-2 lg:border-b-0 lg:border-r-2 border-primarydark-200/40
+                   w-full lg:w-2/3 h-[50vh] lg:h-full overflow-y-auto"
       >
         <FoodsHeader />
         <FoodGrid
@@ -38,12 +39,21 @@ const CalculatorContent = () => {
           selectedFoods={selectedFoods}
         />
       </div>
-      <div className="flex flex-col w-1/3 min-w-[240px] border-r-primarydark-200/40 h-full border-r-2">
-        <SelectedFoodsSection
-          selectedFoods={selectedFoods}
-          removeFood={removeFood}
-        />
-        <CalculateSection />
+
+      {/* Right sidebar - Selected foods & Calculate */}
+      <div className="flex flex-col w-full lg:w-1/3 h-[50vh] lg:h-full overflow-y-auto">
+        {/* Selected Foods Section */}
+        <div className="flex-grow overflow-hidden">
+          <SelectedFoodsSection
+            selectedFoods={selectedFoods}
+            removeFood={removeFood}
+          />
+        </div>
+
+        {/* Calculate Section */}
+        <div className="flex-shrink-0">
+          <CalculateSection />
+        </div>
       </div>
     </div>
   );

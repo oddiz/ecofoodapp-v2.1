@@ -50,7 +50,7 @@ const FoodGrid = React.memo(function FoodGrid({
   }, [foods.length, renderUntil]);
 
   return (
-    <div className="flex-grow-1 flex w-full h-full flex-col overflow-y-auto pb-10 pt-5 px-2">
+    <div className="flex-grow-1 flex w-full h-full flex-col overflow-y-auto pb-10 pt-5 px-2 scrollbar">
       <div className="grid md:grid-cols-2 xs:grid-cols-2 min-[925px]:grid-cols-3 min-[1200px]:grid-cols-4 w-full place-items-center col-span-2 gap-2 ">
         {renderFoods()}
       </div>

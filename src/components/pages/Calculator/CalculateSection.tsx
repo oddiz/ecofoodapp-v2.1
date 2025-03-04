@@ -1,4 +1,3 @@
-import React from "react";
 import { BarChart } from "lucide-react";
 import ResultRenderer from "@/components/ResultRenderer";
 import { useSpWorker } from "@/hooks/useSpWorker";

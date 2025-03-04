@@ -1,10 +1,9 @@
-import React from "react";
 import { type Food } from "@/types/food";
 import { useServerStore } from "@/store/useServerStore";
 import { useSearch } from "@/hooks/useSearch";
 
 const TastePage = () => {
-  const { currentServerFoods, getServerTastePref, setFoodTaste } =
+  const { getCurrentFoods, getServerTastePref, setFoodTaste } =
     useServerStore();
   const { searchInput } = useSearch();
   // Load existing taste preferences
@@ -34,7 +33,7 @@ const TastePage = () => {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {currentServerFoods
+        {getCurrentFoods()
           .filter((food) => {
             if (!searchInput) return true;
             return food.name.toLowerCase().includes(searchInput.toLowerCase());

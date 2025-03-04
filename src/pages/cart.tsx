@@ -74,7 +74,6 @@ export default function ShoppingPage() {
   return (
     <div className="flex flex-col h-full bg-primarydark-800 text-primary-200 p-4 space-y-6 overflow-y-auto">
       <div className="flex justify-between items-center">
-        <h1 className="text-3xl font-bold text-primary-100">Shopping List</h1>
         <div className="flex gap-2">
           <Button
             variant="outline"
@@ -87,13 +86,23 @@ export default function ShoppingPage() {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
         {/* Left column: Add items and list */}
-        <div className="space-y-4">
+        <div className="space-y-4 lg:col-span-2">
           <div className="p-4 bg-primarydark-700 rounded-lg border border-primarydark-500/40 shadow-md">
-            <h2 className="text-xl font-semibold mb-4 text-primary-100">
-              Add Items
-            </h2>
+            <div className="flex justify-between ">
+              <h2 className="text-xl font-semibold mb-4 text-primary-100">
+                Add Items
+              </h2>
+              <Button
+                variant="outline"
+                className="flex items-center gap-2 bg-primarydark-700 border-primarydark-400"
+                onClick={clearShoppingList}
+              >
+                <Trash2 className="h-4 w-4 text-ecored-400" />
+                <span>Clear All</span>
+              </Button>
+            </div>
             <div className="flex space-x-2">
               <Input
                 type="text"
@@ -131,7 +140,7 @@ export default function ShoppingPage() {
             )}
           </div>
           <div className="flex flex-row space-x-4">
-            <div className="bg-primarydark-700 rounded-lg border border-primarydark-500/40 shadow-md overflow-hidden flex-1">
+            <div className="bg-primarydark-700 rounded-lg border border-primarydark-500/40 shadow-md overflow-hidden flex-1 ">
               <div className="p-4 border-b border-primarydark-600 flex justify-between items-center">
                 <h2 className="text-xl font-semibold text-primary-100">
                   Your Shopping List
@@ -216,14 +225,14 @@ export default function ShoppingPage() {
               )}
             </div>
             {shoppingList.length > 0 && (
-              <div className="bg-primarydark-700 rounded-lg border border-primarydark-500/40 shadow-md overflow-hidden flex-1">
+              <div className="bg-primarydark-700 rounded-lg border border-primarydark-500/40 shadow-md overflow-hidden flex-1 min-w-72">
                 <div className="p-4 border-b border-primarydark-600">
                   <h2 className="text-xl font-semibold text-primary-100">
                     Best Deals
                   </h2>
                 </div>
 
-                <div className="max-h-[400px] overflow-auto">
+                <div className=" overflow-auto">
                   <Table>
                     <TableHeader className="bg-primarydark-600">
                       <TableRow>
