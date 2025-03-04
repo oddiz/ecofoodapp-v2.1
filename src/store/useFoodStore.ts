@@ -15,6 +15,7 @@ interface StoreState {
   setSelectedFoods: (foods: Food[]) => void;
   addSelectedFood: (food: Food) => void;
   removeSelectedFood: (food: Food) => void;
+  removeAllSelectedFoods: () => void;
   getAllFoods: () => Food[];
   getFoodQuantity: (foodName: string) => number;
   setActiveFilters: (filters: FilterState) => void;
@@ -70,6 +71,11 @@ export const useFoodStore = create<StoreState>()(
             state.selectedFoods = state.selectedFoods.filter(
               (f) => f.id !== food.id,
             );
+          }),
+
+        removeAllSelectedFoods: () =>
+          set((state) => {
+            state.selectedFoods = [];
           }),
 
         setActiveFilters: (filters) =>

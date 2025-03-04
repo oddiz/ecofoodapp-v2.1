@@ -11,6 +11,7 @@ const CalculatorContent = () => {
     selectedFoods,
     addSelectedFood: addFood,
     removeSelectedFood: removeFood,
+    removeAllSelectedFoods,
   } = useFoodStore();
   const availableFoods = useFoodFilter();
 
@@ -23,7 +24,10 @@ const CalculatorContent = () => {
       addFood(food);
     }
   };
-
+  const handleRemoveAllFoods = () => {
+    // Implement your logic to clear all selected foods
+    removeAllSelectedFoods();
+  };
   return (
     <div className="flex flex-col lg:flex-row h-full w-full overflow-hidden">
       {/* Foods Grid Section - Full width on mobile, 2/3 on desktop */}
@@ -47,6 +51,7 @@ const CalculatorContent = () => {
           <SelectedFoodsSection
             selectedFoods={selectedFoods}
             removeFood={removeFood}
+            removeAllFoods={handleRemoveAllFoods}
           />
         </div>
 

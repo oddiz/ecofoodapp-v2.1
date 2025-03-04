@@ -1,4 +1,4 @@
-import PieChartFromFood from "@/components/pages/Calculator/AvailableFoods/FoodCard/PieChart";
+import CustomPieChart from "@/components/pages/Calculator/AvailableFoods/FoodCard/CustomPieChart";
 import { Tooltip } from "@/components/Tooltip";
 import { type Food } from "@/types/food";
 import { FaWeightHanging, FaFire, FaNutritionix } from "react-icons/fa";
@@ -44,7 +44,7 @@ const FoodCardHeader = ({ food }: { food: Food }) => (
     <div
       className={`pie_chart bottom-2 right-2 h-9 w-9 justify-self-center transition-all duration-100`}
     >
-      <PieChartFromFood interactive={true} labels={false} food={food} />
+      <CustomPieChart size={38} interactive={true} labels={false} food={food} />
     </div>
   </div>
 );

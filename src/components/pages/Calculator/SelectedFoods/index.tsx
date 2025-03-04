@@ -86,9 +86,11 @@ SelectedFoodItem.displayName = "SelectedFoodItem";
 const SelectedFoodsSection = ({
   selectedFoods,
   removeFood,
+  removeAllFoods, // Add this new prop
 }: {
   selectedFoods: Food[];
   removeFood: (food: Food) => void;
+  removeAllFoods: () => void; // Add this type
 }) => {
   return (
     <div className="flex h-full w-full overflow-hidden flex-col bg-primarydark-700 border-primarydark-500/40 border rounded-lg shadow-inner">
@@ -96,6 +98,16 @@ const SelectedFoodsSection = ({
         <h2 className="font-semibold text-lg text-primary-100">
           Selected Foods
         </h2>
+        {selectedFoods.length > 0 && (
+          <button
+            onClick={removeAllFoods}
+            className="text-xs px-2.5 py-1 rounded bg-primarydark-600 text-primary-300 border border-primarydark-500/50 hover:bg-ecored-600/20 hover:text-ecored-400 hover:border-ecored-600/30 transition-colors flex items-center gap-1.5"
+            aria-label="Remove all foods"
+          >
+            <X size={12} />
+            <span>Remove All</span>
+          </button>
+        )}
       </div>
 
       {selectedFoods.length === 0 ? (
