@@ -9,8 +9,8 @@ import CalculateSection from "@/components/pages/Calculator/CalculateSection";
 const CalculatorContent = () => {
   const {
     selectedFoods,
-    addSelectedFood: addFood,
-    removeSelectedFood: removeFood,
+    addSelectedFood,
+    removeSelectedFood,
     removeAllSelectedFoods,
   } = useFoodStore();
   const availableFoods = useFoodFilter();
@@ -19,9 +19,9 @@ const CalculatorContent = () => {
 
   const onFoodClicked = (food: Food) => {
     if (selectedFoods.some((selFood) => selFood.id === food.id)) {
-      removeFood(food);
+      removeSelectedFood(food);
     } else {
-      addFood(food);
+      addSelectedFood(food);
     }
   };
   const handleRemoveAllFoods = () => {
@@ -50,7 +50,7 @@ const CalculatorContent = () => {
         <div className="flex-grow overflow-hidden">
           <SelectedFoodsSection
             selectedFoods={selectedFoods}
-            removeFood={removeFood}
+            removeFood={removeSelectedFood}
             removeAllFoods={handleRemoveAllFoods}
           />
         </div>
