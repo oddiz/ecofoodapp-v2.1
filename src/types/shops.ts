@@ -28,5 +28,7 @@ export interface FoodShop {
   foodsForSale: Food[];
   name: string;
   owner: string;
+  coordinates?: [number, number];
   prices: Record<Food["name"], number>;
+  quantities: Record<Food["name"], number>;
 }

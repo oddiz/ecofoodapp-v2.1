@@ -1,14 +1,16 @@
 import { allFoods } from "@/data/foodData";
+import { useFoodStore } from "@/store/useFoodStore";
 import type { CalculateSPResult, Food } from "@/types/food";
 import type { EcoServer } from "@/types/server";
 import type { FoodShop } from "@/types/shops";
-import { getServerFoods } from "@/utils/getServerFoods";
-import { getServerFoodShops } from "@/utils/getServerFoodShops";
+import { getFoodsFromAPI } from "@/utils/getServerFoods";
+import { getFoodShopsFromAPI } from "@/utils/getServerFoodShops";
+import { parseStoreCoordinates } from "@/utils/parseStoreCoordinates";
 import { sanitizeUrl } from "@/utils/sanitizeUrl";
 import { toast } from "sonner";
 import { create } from "zustand";
 import { persist, createJSONStorage, devtools } from "zustand/middleware";
-
+import { immer } from "zustand/middleware/immer";
 const defaultServer: EcoServer = {
   name: "Default",
   address: "http://localhost:3000",
@@ -24,10 +26,13 @@ interface ServerStoreState {
   serverLoading: boolean;
   currentServer: EcoServer;
   availableServers: EcoServer[];
-  currentServerFoods: Food[];
   currentServerStores: FoodShop[];
   serverFoods: Record<EcoServer["address"], Food[]>;
   serverShops: Record<EcoServer["address"], FoodShop[]>;
+  serverShopCoordinates: Record<
+    EcoServer["address"],
+    Record<string, [number, number]>
+  >;
   serverTastePrefs: Record<EcoServer["address"], Record<string, number>>;
   serverCalculationResults: Record<
     EcoServer["address"],
@@ -46,7 +51,7 @@ interface ServerStoreState {
   getServerBlacklist: () => string[];
   resetServerBlacklist: () => void;
   getServerTastePref: () => Record<string, number>;
-  getServerFoods: (server: EcoServer) => Food[];
+  getCurrentFoods: () => Food[];
   setCurrentServer: (server: EcoServer) => Promise<void>;
   setFoodTaste: (food: Food, value: number) => void;
   addServer: (
@@ -60,14 +65,14 @@ interface ServerStoreState {
 export const useServerStore = create<ServerStoreState>()(
   devtools(
     persist(
-      (set, get) => ({
+      immer((set, get) => ({
         serverLoading: false,
         currentServer: defaultServer,
         availableServers: [defaultServer],
-        currentServerFoods: defaultServerFoods[defaultServer.address]!,
         currentServerStores: defaultServerShops[defaultServer.address]!,
         serverFoods: defaultServerFoods,
         serverShops: defaultServerShops,
+        serverShopCoordinates: {},
         serverTastePrefs: {},
         serverCalculationResults: {},
         serverBlacklists: {},
@@ -76,12 +81,10 @@ export const useServerStore = create<ServerStoreState>()(
         getLastRefresh: () =>
           get().lastRefreshList[get().currentServer.address],
         setLastRefresh: (time: number) => {
-          set((state) => ({
-            lastRefreshList: {
-              ...state.lastRefreshList,
-              [state.currentServer.address]: time,
-            },
-          }));
+          set((state) => {
+            // Direct mutation with Immer
+            state.lastRefreshList[state.currentServer.address] = time;
+          });
         },
         getShopResult: (shopName) =>
           get().serverCalculationResults[get().currentServer.address]?.[
@@ -91,39 +94,33 @@ export const useServerStore = create<ServerStoreState>()(
           shopName: string,
           results: CalculateSPResult,
         ) => {
-          set((state) => ({
-            serverCalculationResults: {
-              ...state.serverCalculationResults,
-              [state.currentServer.address]: {
-                ...state.serverCalculationResults[state.currentServer.address],
-                [shopName]: results,
-              },
-            },
-          }));
+          set((state) => {
+            const address = state.currentServer.address;
+            // Initialize if undefined
+            if (!state.serverCalculationResults[address]) {
+              state.serverCalculationResults[address] = {};
+            }
+            // Direct mutation with Immer
+            state.serverCalculationResults[address][shopName] = results;
+          });
         },
         setServerBlacklist: (shopName: string) => {
           set((state) => {
             const address = state.currentServer.address;
-            const currentBlacklist = state.serverBlacklists[address] ?? [];
-            return {
-              serverBlacklists: {
-                ...state.serverBlacklists,
-                [address]: [...currentBlacklist, shopName],
-              },
-            };
+            // Initialize if undefined
+            if (!state.serverBlacklists[address]) {
+              state.serverBlacklists[address] = [];
+            }
+            // Direct mutation with Immer
+            state.serverBlacklists[address].push(shopName);
           });
         },
         getServerBlacklist: () =>
           get().serverBlacklists[get().currentServer.address] ?? [],
         resetServerBlacklist: () => {
           set((state) => {
-            const address = state.currentServer.address;
-            return {
-              serverBlacklists: {
-                ...state.serverBlacklists,
-                [address]: [],
-              },
-            };
+            // Direct mutation with Immer
+            state.serverBlacklists[state.currentServer.address] = [];
           });
         },
         getServerTastePref: () =>
@@ -131,91 +128,90 @@ export const useServerStore = create<ServerStoreState>()(
         setFoodTaste: (food: Food, value: number) => {
           set((state) => {
             const address = state.currentServer.address;
-            const currentPrefs = state.serverTastePrefs[address] ?? {};
-            return {
-              serverTastePrefs: {
-                ...state.serverTastePrefs,
-                [address]: {
-                  ...currentPrefs,
-                  [food.name]: value,
-                },
-              },
-            };
+            // Initialize if undefined
+            if (!state.serverTastePrefs[address]) {
+              state.serverTastePrefs[address] = {};
+            }
+            // Direct mutation with Immer
+            state.serverTastePrefs[address][food.name] = value;
           });
         },
-        getServerFoods: (server) =>
-          get().serverFoods[server.address] ?? allFoods,
+        getCurrentFoods: () => {
+          const currentServerAddress = get().currentServer.address;
+          return get().serverFoods[currentServerAddress] ?? allFoods;
+        },
         setCurrentServer: async (server) => {
           try {
             if (defaultServer.address === server.address) {
-              return set({
-                currentServer: server,
-                currentServerFoods: allFoods,
-                currentServerStores: [],
+              return set((state) => {
+                state.currentServer = server;
+                state.currentServerStores = [];
               });
             }
-            set({ serverLoading: true });
-            const serverFoods = await getServerFoods(
+            set((state) => {
+              state.serverLoading = true;
+            });
+            const serverFoods = await getFoodsFromAPI(
               sanitizeUrl(server.address),
             );
-            const serverShops = await getServerFoodShops(
+            const serverShops = await getFoodShopsFromAPI(
               sanitizeUrl(server.address),
               serverFoods,
             );
-            set((state) => ({
-              currentServer: server,
-              currentServerFoods: serverFoods ?? [],
-              currentServerStores: serverShops ?? [],
-              serverFoods: {
-                ...state.serverFoods,
-                [server.address]: serverFoods,
-              },
-              serverShops: {
-                ...state.serverShops,
-                [server.address]: serverShops,
-              },
-              serverCalculationResults: {
-                ...state.serverCalculationResults,
-                [server.address]: {},
-              },
-              serverLoading: false,
-              lastRefreshList: {
-                ...state.lastRefreshList,
-                [server.address]: Date.now(),
-              },
-            }));
+            const shopsWithCoords = await parseStoreCoordinates(
+              sanitizeUrl(server.address),
+              serverShops,
+            );
+
+            const storeCoordinates = {} as Record<string, [number, number]>;
+
+            shopsWithCoords.updatedShops.forEach((shop) => {
+              storeCoordinates[shop.name] = shop.coordinates!;
+            });
+
+            // clear selectedFoods
+            useFoodStore.getState().setSelectedFoods([]);
+
+            set((state) => {
+              state.currentServer = server;
+              state.currentServerStores = serverShops ?? [];
+              state.serverFoods[server.address] = serverFoods;
+              state.serverShops[server.address] = serverShops;
+              state.serverShopCoordinates[server.address] = storeCoordinates;
+
+              // Initialize if necessary
+              if (!state.serverCalculationResults[server.address]) {
+                state.serverCalculationResults[server.address] = {};
+              }
+
+              state.serverLoading = false;
+              state.lastRefreshList[server.address] = Date.now();
+            });
           } catch {
             toast("Failed to fetch server data");
-            set({ serverLoading: false });
-            return;
+            set((state) => {
+              state.serverLoading = false;
+            });
           }
         },
         addServer: (server, serverFoods, serverShops) => {
           set((state) => {
             if (!get().availableServers.includes(server)) {
-              return {
-                availableServers: [...state.availableServers, server],
-                serverFoods: {
-                  ...state.serverFoods,
-                  [server.address]: serverFoods,
-                },
-                serverShops: {
-                  ...state.serverShops,
-                  [server.address]: serverShops,
-                },
-              };
+              state.availableServers.push(server);
+              state.serverFoods[server.address] = serverFoods;
+              state.serverShops[server.address] = serverShops;
+              state.serverShopCoordinates[server.address] = {};
             }
-            return state;
           });
         },
         removeServer: (server) => {
-          set((state) => ({
-            availableServers: state.availableServers.filter(
-              (s) => s !== server,
-            ),
-          }));
+          set((state) => {
+            state.availableServers = state.availableServers.filter(
+              (s) => s.address !== server.address,
+            );
+          });
         },
-      }),
+      })),
       {
         name: "server-store",
         storage: createJSONStorage(() => localStorage),

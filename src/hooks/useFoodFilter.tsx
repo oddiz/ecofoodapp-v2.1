@@ -1,7 +1,6 @@
 import { useMemo } from "react";
 import type { Food, FoodTier, SortableProperty } from "@/types/food";
 import { useFoodStore } from "@/store/useFoodStore";
-import { useSearch } from "@/hooks/useSearch";
 import { useServerStore } from "@/store/useServerStore";
 
 const isSortableProperty = (property: string): property is SortableProperty => {
@@ -15,42 +14,37 @@ const getSortValue = (food: Food, property: SortableProperty): number => {
   return 0;
 };
 
+const getTotalNutrients = (food: Food): number => {
+  return food.carb + food.vit + food.fat + food.pro;
+};
+
 export const useFoodFilter = () => {
-  const { currentServerFoods } = useServerStore();
+  const { getCurrentFoods } = useServerStore();
   const { activeFilters } = useFoodStore();
-  const { searchInput } = useSearch();
-  return useMemo(() => {
-    let filteredFoods = currentServerFoods;
+  const serverFoods = getCurrentFoods();
 
-    // Apply search filter
-    if (searchInput.length > 0) {
-      filteredFoods = filteredFoods.filter((food) =>
-        food.name.toLowerCase().includes(searchInput.toLowerCase()),
-      );
-    }
+  // Memoize the entire filtering and sorting operation
+  const filteredFoods = useMemo(() => {
+    // Define filter functions
+    const typeFilter = (food: Food) =>
+      activeFilters.type.length === 0 || activeFilters.type.includes(food.type);
 
-    // Apply type filter
-    if (activeFilters.type.length > 0) {
-      filteredFoods = filteredFoods.filter((food) =>
-        activeFilters.type.includes(food.type),
-      );
-    }
+    const tierFilter = (food: Food) =>
+      activeFilters.tier.length === 0 ||
+      activeFilters.tier.includes(`Tier-${food.tier}` as FoodTier);
 
-    // Apply tier filter
-    if (activeFilters.tier.length > 0) {
-      filteredFoods = filteredFoods.filter((food) =>
-        activeFilters.tier.includes(("Tier-" + String(food.tier)) as FoodTier),
-      );
-    }
+    // Apply all filters in a single chain
+    const filtered = serverFoods.filter(
+      (food) => typeFilter(food) && tierFilter(food),
+    );
 
-    // Sort foods
-    filteredFoods.sort((a, b) => {
+    // Create a sorted copy to avoid mutating the filtered array
+    return [...filtered].sort((a, b) => {
       const { id, desc } = activeFilters.sort;
       let result: number;
 
       if (id === "total_nutrients") {
-        result =
-          b.carb + b.vit + b.fat + b.pro - (a.carb + a.vit + a.fat + a.pro);
+        result = getTotalNutrients(b) - getTotalNutrients(a);
       } else if (id === "name") {
         result = a.name.localeCompare(b.name);
       } else if (isSortableProperty(id)) {
@@ -61,13 +55,7 @@ export const useFoodFilter = () => {
 
       return desc ? result : -result;
     });
+  }, [serverFoods, activeFilters.type, activeFilters.tier, activeFilters.sort]);
 
-    return filteredFoods;
-  }, [
-    activeFilters.sort,
-    activeFilters.tier,
-    activeFilters.type,
-    currentServerFoods,
-    searchInput,
-  ]);
+  return filteredFoods;
 };

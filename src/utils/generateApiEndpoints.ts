@@ -4,14 +4,14 @@ export function generateApiEndpoints(serverIp: string) {
     if (serverIp.includes(":")) {
       return {
         stores: `http://${serverIp}/api/v1/plugins/EcoPriceCalculator/stores`,
-        mapGif: `http://${serverIp}/Layers/TerrainLatest.gif`,
+        mapGif: `http://${serverIp}/Layers/WorldPreview.gif`,
         mapInfo: `http://${serverIp}/api/v1/map/map.json`,
         allItems: `http://${serverIp}/api/v1/plugins/EcoPriceCalculator/allItems`,
       };
     }
     return {
       stores: `https://${serverIp}/api/v1/plugins/EcoPriceCalculator/stores`,
-      mapGif: `https://${serverIp}/Layers/TerrainLatest.gif`,
+      mapGif: `https://${serverIp}/Layers/WorldPreview.gif`,
       mapInfo: `https://${serverIp}/api/v1/map/map.json`,
       allItems: `https://${serverIp}/api/v1/plugins/EcoPriceCalculator/allItems`,
     };
@@ -20,7 +20,7 @@ export function generateApiEndpoints(serverIp: string) {
 
   return {
     stores: `${proxyBase}?server=${serverIp}&path=api/v1/plugins/EcoPriceCalculator/stores`,
-    mapGif: `${proxyBase}?server=${serverIp}&path=Layers/TerrainLatest.gif`,
+    mapGif: `${proxyBase}?server=${serverIp}&path=Layers/WorldPreview.gif`,
     mapInfo: `${proxyBase}?server=${serverIp}&path=api/v1/map/map.json`,
     allItems: `${proxyBase}?server=${serverIp}&path=api/v1/plugins/EcoPriceCalculator/allItems`,
   };

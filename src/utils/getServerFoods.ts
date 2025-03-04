@@ -3,7 +3,7 @@ import type { Food } from "@/types/food";
 import { generateApiEndpoints } from "@/utils/generateApiEndpoints";
 import { isProperFood } from "@/utils/isProperFood";
 
-export async function getServerFoods(serverIp: string): Promise<Food[]> {
+export async function getFoodsFromAPI(serverIp: string): Promise<Food[]> {
   const response = await fetch(generateApiEndpoints(serverIp).allItems);
   if (!response.ok) {
     throw new Error("Failed to fetch server foods");

@@ -2,7 +2,7 @@ import type { Food } from "@/types/food";
 import type { EcoShop, FoodShop, ShopsAPI } from "@/types/shops";
 import { generateApiEndpoints } from "@/utils/generateApiEndpoints";
 
-export async function getServerFoodShops(
+export async function getFoodShopsFromAPI(
   serverIp: string,
   serverFoods: Food[],
 ) {
@@ -35,11 +35,23 @@ export async function getServerFoodShops(
       },
       {} as Record<Food["name"], number>,
     );
+
+    const quantities = foodsForSale.reduce(
+      (acc, offer) => {
+        const storeOffer = store.AllOffers.find(
+          (storeOffer) => storeOffer.ItemName === offer.name,
+        )!;
+        acc[offer.name] = storeOffer.Quantity;
+        return acc;
+      },
+      {} as Record<Food["name"], number>,
+    );
     return {
       foodsForSale: uniqueFoods,
       name: store.Name,
       owner: store.Owner,
       prices,
+      quantities,
     };
   });
 
