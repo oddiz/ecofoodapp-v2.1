@@ -285,10 +285,24 @@ function calculateSPOptimized(
   if (totalFatSum > maxNutrition) maxNutrition = totalFatSum;
   if (totalVitaminSum > maxNutrition) maxNutrition = totalVitaminSum;
 
-  // Balance factor calculation with constant factor precalculated
-  const BALANCE_FACTOR_MULTIPLIER = 0.5; // 2/4 simplified
-  const balancedFactor =
-    (totalNutrition / maxNutrition) * BALANCE_FACTOR_MULTIPLIER;
+  const mostNutrient = Math.max(
+    totalCarbSum,
+    totalProteinSum,
+    totalFatSum,
+    totalVitaminSum,
+  );
+
+  const leastNutrient = Math.min(
+    totalCarbSum,
+    totalProteinSum,
+    totalFatSum,
+    totalVitaminSum,
+  );
+
+  // leastNutrient / mostNutrient where 0 is 0% boost and 1 is 50% boost
+  const nutrientBalance = leastNutrient / mostNutrient;
+
+  const balancedFactor = 1 + nutrientBalance * 0.5;
 
   // Final SP calculation with baseGain as constant
   const BASE_GAIN = 12;
