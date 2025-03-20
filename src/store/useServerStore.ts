@@ -47,6 +47,7 @@ interface ServerStoreState {
     shopName: string,
     results: CalculateSPResult,
   ) => void;
+  refreshCurrentServer: () => Promise<void>;
   setServerBlacklist: (shopName: string) => void;
   getServerBlacklist: () => string[];
   resetServerBlacklist: () => void;
@@ -148,45 +149,7 @@ export const useServerStore = create<ServerStoreState>()(
                 state.currentServerStores = [];
               });
             }
-            set((state) => {
-              state.serverLoading = true;
-            });
-            const serverFoods = await getFoodsFromAPI(
-              sanitizeUrl(server.address),
-            );
-            const serverShops = await getFoodShopsFromAPI(
-              sanitizeUrl(server.address),
-              serverFoods,
-            );
-            const shopsWithCoords = await parseStoreCoordinates(
-              sanitizeUrl(server.address),
-              serverShops,
-            );
-
-            const storeCoordinates = {} as Record<string, [number, number]>;
-
-            shopsWithCoords.updatedShops.forEach((shop) => {
-              storeCoordinates[shop.name] = shop.coordinates!;
-            });
-
-            // clear selectedFoods
-            useFoodStore.getState().setSelectedFoods([]);
-
-            set((state) => {
-              state.currentServer = server;
-              state.currentServerStores = serverShops ?? [];
-              state.serverFoods[server.address] = serverFoods;
-              state.serverShops[server.address] = serverShops;
-              state.serverShopCoordinates[server.address] = storeCoordinates;
-
-              // Initialize if necessary
-              if (!state.serverCalculationResults[server.address]) {
-                state.serverCalculationResults[server.address] = {};
-              }
-
-              state.serverLoading = false;
-              state.lastRefreshList[server.address] = Date.now();
-            });
+            await get().refreshCurrentServer();
           } catch {
             toast("Failed to fetch server data");
             set((state) => {
@@ -203,6 +166,101 @@ export const useServerStore = create<ServerStoreState>()(
               state.serverShopCoordinates[server.address] = {};
             }
           });
+        },
+        refreshCurrentServer: async () => {
+          try {
+            const currentServer = get().currentServer;
+            useFoodStore.getState().removeAllSelectedFoods();
+            // Don't refresh the default local server
+            if (defaultServer.address === currentServer.address) {
+              return;
+            }
+
+            set((state) => {
+              state.serverLoading = true;
+            });
+
+            // Get current data for comparison later
+            const oldShops = get().serverShops[currentServer.address] ?? [];
+
+            // Fetch new data
+            const serverFoods = await getFoodsFromAPI(
+              sanitizeUrl(currentServer.address),
+            );
+            const serverShops = await getFoodShopsFromAPI(
+              sanitizeUrl(currentServer.address),
+              serverFoods,
+            );
+            const shopsWithCoords = await parseStoreCoordinates(
+              sanitizeUrl(currentServer.address),
+              serverShops,
+            );
+
+            const storeCoordinates = {} as Record<string, [number, number]>;
+            shopsWithCoords.updatedShops.forEach((shop) => {
+              storeCoordinates[shop.name] = shop.coordinates!;
+            });
+
+            // Determine which shops have changed food lineups
+            const changedShops = new Set<string>();
+
+            serverShops.forEach((shop) => {
+              const oldShop = oldShops.find((s) => s.name === shop.name);
+
+              // If the shop is new or its food lineup has changed
+              if (
+                !oldShop ||
+                JSON.stringify([...shop.foodsForSale].sort()) !==
+                  JSON.stringify([...oldShop.foodsForSale].sort())
+              ) {
+                changedShops.add(shop.name);
+              }
+            });
+
+            set((state) => {
+              state.currentServerStores = serverShops;
+              state.serverFoods[currentServer.address] = serverFoods;
+              state.serverShops[currentServer.address] = serverShops;
+              state.serverShopCoordinates[currentServer.address] =
+                storeCoordinates;
+
+              // Initialize calculation results if necessary
+              if (!state.serverCalculationResults[currentServer.address]) {
+                state.serverCalculationResults[currentServer.address] = {};
+              }
+
+              // Reset calculation results only for shops that have changed
+              if (changedShops.size > 0) {
+                changedShops.forEach((shopName) => {
+                  if (
+                    state.serverCalculationResults[currentServer.address]?.[
+                      shopName
+                    ]
+                  ) {
+                    if (state.serverCalculationResults[currentServer.address]) {
+                      delete state.serverCalculationResults[
+                        currentServer.address
+                      ]?.[shopName];
+                    }
+                  }
+                });
+              }
+
+              state.serverLoading = false;
+              state.lastRefreshList[currentServer.address] = Date.now();
+            });
+
+            if (changedShops.size > 0) {
+              toast(`Refreshed ${changedShops.size} shops with updated menus`);
+            } else {
+              toast("Server data refreshed");
+            }
+          } catch (error) {
+            toast("Failed to refresh server data");
+            set((state) => {
+              state.serverLoading = false;
+            });
+          }
         },
         removeServer: (server) => {
           set((state) => {

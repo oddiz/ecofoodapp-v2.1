@@ -1,12 +1,12 @@
 # Feature list
 
-- Shopping list
+- Shopping list ✅
 - arbitrage calculator
 
 ## Calculate Page
 
-- when calculated show which stores sell the item
-- tier cards like food cards
+- when calculated show which stores sell the item ✅
+- tier cards like food cards ✅
 
 ## Shop Page
 
@@ -22,7 +22,7 @@
 ## Taste Page
 
 - header to taste part
-  - reset to default
+  - reset to default ✅
 
 ## Settings Page
 

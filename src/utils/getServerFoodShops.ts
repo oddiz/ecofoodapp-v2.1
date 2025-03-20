@@ -16,7 +16,13 @@ export async function getFoodShopsFromAPI(
   const foodShops = Stores.filter((store) => isFoodShop(store, serverFoods));
 
   const parsedFoodShops: FoodShop[] = foodShops.map((store) => {
-    const foodsForSale = store.AllOffers.filter((offer) => !offer.Buying)
+    // First, get all non-buying offers with their quantities
+    const foodOffersWithQuantity = store.AllOffers.filter(
+      (offer) => !offer.Buying && offer.Quantity > 0,
+    );
+
+    // Then map to the actual food objects
+    const foodsForSale = foodOffersWithQuantity
       .map((offer) => serverFoods.find((food) => food.name === offer.ItemName))
       .filter((food) => food !== undefined);
 
@@ -46,6 +52,7 @@ export async function getFoodShopsFromAPI(
       },
       {} as Record<Food["name"], number>,
     );
+
     return {
       foodsForSale: uniqueFoods,
       name: store.Name,
@@ -54,8 +61,14 @@ export async function getFoodShopsFromAPI(
       quantities,
     };
   });
-
-  return parsedFoodShops;
+  // Filter out shops with duplicate names by keeping only the first occurrence
+  const uniqueShopsWithFood = parsedFoodShops
+    .filter(
+      (shop, index, self) =>
+        self.findIndex((s) => s.name === shop.name) === index,
+    )
+    .filter((shop) => shop.foodsForSale.length > 0);
+  return uniqueShopsWithFood;
 }
 
 /**

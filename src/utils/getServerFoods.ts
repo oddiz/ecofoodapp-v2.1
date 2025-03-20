@@ -14,6 +14,10 @@ export async function getFoodsFromAPI(serverIp: string): Promise<Food[]> {
     isProperFood(item),
   );
   const foods: Food[] = foodItems.map(({ PropertyInfos }) => {
+    const name = PropertyInfos.DisplayName.LocString;
+    if (name === "Fruit Salad") {
+      console.log(PropertyInfos);
+    }
     const nutrients = parseNutrients(PropertyInfos.Nutrition!.Nutrients);
 
     const carb = nutrients.carbs ?? 0;
@@ -28,7 +32,7 @@ export async function getFoodsFromAPI(serverIp: string): Promise<Food[]> {
 
     return {
       id: Number(PropertyInfos.TypeID.Int32),
-      name: PropertyInfos.DisplayName.LocString,
+      name,
       type,
       tier,
       cal: Number(PropertyInfos.Calories?.Single) ?? 0,

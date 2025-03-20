@@ -45,7 +45,10 @@ export function isProperFood(item: Item) {
   // All tags should be either required tags or from validOptionalTags
   const allTagsValid = item.Tags.every(
     (tag) =>
-      tag === "Food" || tag === "Product" || validOptionalTags.includes(tag),
+      tag === "Food" ||
+      tag === "Product" ||
+      tag == "Ingredient" ||
+      validOptionalTags.includes(tag),
   );
 
   return allTagsValid;
