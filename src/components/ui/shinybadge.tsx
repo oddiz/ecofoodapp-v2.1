@@ -9,7 +9,9 @@ interface SparklyBadgeButtonProps {
 
 const SparklyBadgeButton: React.FC<SparklyBadgeButtonProps> = ({
   label = "Premium",
-  onClick = () => {},
+  onClick = () => {
+    /* no-op */
+  },
   color = "purple",
   size = "md",
 }) => {
@@ -171,30 +173,6 @@ const SparklyBadgeButton: React.FC<SparklyBadgeButtonProps> = ({
         }
       `}</style>
     </button>
-  );
-};
-
-// Demo component with all variants
-const SparklyButtonDemo = () => {
-  return (
-    <div className="flex flex-col items-center justify-center space-y-8 p-8 bg-gray-100 rounded-lg min-h-64">
-      <h2 className="text-2xl font-bold text-gray-800">
-        Sparkly Badge Buttons
-      </h2>
-
-      <div className="flex flex-wrap gap-4 justify-center">
-        <SparklyBadgeButton color="blue" label="Premium" />
-        <SparklyBadgeButton color="purple" label="Pro" />
-        <SparklyBadgeButton color="pink" label="VIP" />
-        <SparklyBadgeButton color="gold" label="Featured" />
-      </div>
-
-      <div className="flex flex-wrap gap-4 justify-center">
-        <SparklyBadgeButton size="sm" label="Small" />
-        <SparklyBadgeButton size="md" label="Medium" />
-        <SparklyBadgeButton size="lg" label="Large" />
-      </div>
-    </div>
   );
 };
 
