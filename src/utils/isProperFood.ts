@@ -40,6 +40,7 @@ export function isProperFood(item: Item) {
     "BakedVegetable",
     "CharredFruit",
     "FriedVegetable",
+    "Juice",
   ];
 
   // All tags should be either required tags or from validOptionalTags
