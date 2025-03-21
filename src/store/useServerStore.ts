@@ -149,6 +149,11 @@ export const useServerStore = create<ServerStoreState>()(
                 state.currentServerStores = [];
               });
             }
+            set((state) => {
+              state.serverLoading = true;
+              state.currentServer = server;
+              state.currentServerStores = [];
+            });
             await get().refreshCurrentServer();
           } catch {
             toast("Failed to fetch server data");
