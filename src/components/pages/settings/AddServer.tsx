@@ -1,4 +1,5 @@
 import { Badge } from "@/components/ui/badge";
+import SparklyBadgeButton from "@/components/ui/shinybadge";
 import {
   TableBody,
   Table,
@@ -26,10 +27,7 @@ const PREFILLED_SERVERS: EcoServer[] = [
     name: "Sunset Isle",
     address: "135.131.96.179:3005",
   },
-  {
-    name: "Silverleaf",
-    address: "209.222.98.135:3001",
-  },
+
   {
     name: "Lotus Eco",
     address: "78.46.87.6:3001",
@@ -119,6 +117,15 @@ const AddServerComponent = () => {
               Presets
             </h3>
             <div className="flex flex-wrap gap-2">
+              <SparklyBadgeButton
+                color="pink"
+                onClick={() => {
+                  setNewServerName("Silverleaf");
+                  setNewServerIP("209.222.98.135:3001");
+                }}
+                size="sm"
+                label="Silverleaf"
+              />
               {PREFILLED_SERVERS.map((server: EcoServer) => (
                 <span
                   key={server.name}
