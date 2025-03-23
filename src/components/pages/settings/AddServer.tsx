@@ -20,6 +20,21 @@ import { toast } from "sonner";
 
 const PREFILLED_SERVERS: EcoServer[] = [
   {
+    name: "Silverleaf",
+    address: "209.222.98.135:3001",
+    color: "pink",
+  },
+  {
+    name: "AWL High Collab",
+    address: "ecoserver.awlgaming.net:5679",
+    color: "purple",
+  },
+  {
+    name: "AWL Long Term",
+    address: "eco-long.awlgaming.net:3001",
+    color: "purple",
+  },
+  {
     name: "White Tiger",
     address: "white-tiger.play.eco",
   },
@@ -117,27 +132,35 @@ const AddServerComponent = () => {
               Presets
             </h3>
             <div className="flex flex-wrap gap-2">
-              <SparklyBadgeButton
-                color="pink"
-                onClick={() => {
-                  setNewServerName("Silverleaf");
-                  setNewServerIP("209.222.98.135:3001");
-                }}
-                size="sm"
-                label="Silverleaf"
-              />
-              {PREFILLED_SERVERS.map((server: EcoServer) => (
-                <span
-                  key={server.name}
-                  onClick={() => {
-                    setNewServerName(server.name);
-                    setNewServerIP(server.address);
-                  }}
-                  className="bg-ecoyellow-700 cursor-pointer text-white text-xs rounded-full px-2 py-1"
-                >
-                  {server.name}
-                </span>
-              ))}
+              {PREFILLED_SERVERS.map((server: EcoServer) => {
+                if (server.color) {
+                  return (
+                    <SparklyBadgeButton
+                      key={server.name}
+                      color={server.color}
+                      onClick={() => {
+                        setNewServerName(server.name);
+                        setNewServerIP(server.address);
+                      }}
+                      size="sm"
+                      label={server.name}
+                    />
+                  );
+                } else {
+                  return (
+                    <span
+                      key={server.name}
+                      onClick={() => {
+                        setNewServerName(server.name);
+                        setNewServerIP(server.address);
+                      }}
+                      className="bg-ecoyellow-700 cursor-pointer text-white text-xs rounded-full px-2 py-1"
+                    >
+                      {server.name}
+                    </span>
+                  );
+                }
+              })}
             </div>
           </div>
         </div>

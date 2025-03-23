@@ -2,11 +2,14 @@
 
 - Shopping list ✅
 - arbitrage calculator
+- better food filtering from server
 
 ## Calculate Page
 
 - when calculated show which stores sell the item ✅
 - tier cards like food cards ✅
+- Add stomach content card to include in the calculations
+- save calculation result for current selected foods
 
 ## Shop Page
 
@@ -18,6 +21,8 @@
 - calculate using all the server food in shopCard ✅
 - button to hide the calc result in shopCard ✅
 - button to blacklist a shop ✅
+-
+- button to add the shop foods to selected foods
 
 ## Taste Page
 
