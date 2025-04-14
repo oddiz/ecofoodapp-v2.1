@@ -38,6 +38,7 @@ export function isProperFood(item: Item) {
     "Bread",
     "Salad",
     "BakedVegetable",
+    "BakedFood",
     "CharredFruit",
     "FriedVegetable",
     "Juice",
