@@ -53,6 +53,5 @@ export function   isProperFood(item: Item) {
       validOptionalTags.includes(tag) ||
       tag === "CanBeOnSurface",
   );
-console.log(allTagsValid);
   return allTagsValid;
 }
