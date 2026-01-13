@@ -20,8 +20,8 @@ import { toast } from "sonner";
 
 const PREFILLED_SERVERS: EcoServer[] = [
   {
-    name: "Silverleaf",
-    address: "209.222.98.135:3001",
+    name: "BeEco",
+    address: "51.255.77.221:3001",
     color: "pink",
   },
   {

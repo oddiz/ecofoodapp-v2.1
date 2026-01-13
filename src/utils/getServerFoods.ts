@@ -48,7 +48,6 @@ export async function getFoodsFromAPI(serverIp: string): Promise<Food[]> {
   const uniqueFoods = foods.filter(
     (food, index, self) => self.findIndex((f) => f.id === food.id) === index,
   );
-
   return uniqueFoods;
 }
 

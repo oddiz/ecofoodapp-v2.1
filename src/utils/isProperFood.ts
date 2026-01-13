@@ -7,7 +7,7 @@ import type { Item } from "@/types/allitems";
  * @param {number} item.calories - Caloric content of the item
  * @returns {boolean} - True if the item meets all criteria, false otherwise
  */
-export function isProperFood(item: Item) {
+export function   isProperFood(item: Item) {
   // Check if item has required properties
   if (
     !item?.Tags ||
@@ -50,8 +50,9 @@ export function isProperFood(item: Item) {
       tag === "Food" ||
       tag === "Product" ||
       tag == "Ingredient" ||
-      validOptionalTags.includes(tag),
+      validOptionalTags.includes(tag) ||
+      tag === "CanBeOnSurface",
   );
-
+console.log(allTagsValid);
   return allTagsValid;
 }
